@@ -1,0 +1,4 @@
+my project is migration of GIS data its a telecom application(GIS)
+there are 3 ways we have done it
+1)forward that is gcomms to iqgeo that means changing longitude and latitude to binary data and other filtrations generally forward in the sense old data migration
+2)
