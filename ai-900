@@ -1,0 +1,324 @@
+FUNDAMENTAL AI CONCEPTS
+
+
+INTRODUCTION TO AI:
+ai is the software that imitates human behaviors and capabilities
+1)machine learning:we teach to computer model to make predictions and output the conclusions from data
+2)computer vision:to show the world visually through cameras,video and images
+3)natural language processing:computer to show writtern or spoken language and respond in kind
+4)document intelligence:ai can read and process the large ammounts of data in formas or documents
+5)knowledge mining:it can extract information from large volumes of unstructured data to create searchable knowledge
+6)generative ai:creates content in variety of formats including natural language,image,code and more
+
+------------------------------------------------------------------------------------------------------------------------------------------
+UNDERSTAND MACHINE LEARNING:
+1)collect data
+2)label the data based on their different types
+3)use algorithm to fetch the features
+4)results are stored in model
+5)when new sample we give to the model, it can predict the feature of it
+
+services in microsoft:
+1)automated machine learning:non-experts to quickly create an effective ml model from data
+2)azure machine learning designer:its a graphical interface enables no-code development of mahine learning solutions
+3)data metric visualization:analyze and optimize your experiments with visualization
+4)notebooks:write and run code in jupyter notebook servers that integrates in studio
+
+
+------------------------------------------------------------------------------------------------------------------------------------------
+
+UNDERSTAND COMPUTER VISION
+its a model that can be applied to visual input from cameras,videos or images
+1)image classification:
+classifies the image based on content
+ex:taxi in traffic or busses,cyclist
+2)object detection:
+it identifies to individual objects and location with bounding box
+ex:bus,car,cycle
+3)semantic segmentation:
+it identifies each object with unique color
+bus-->read
+car-->blue
+cyclist-->green
+4)image analysis:
+it will read the image content and give description
+ex:a person with a dog on a street
+5)face detection,analysis, and recognition:
+it will identify the facial features and classifies
+6)optical character recognition:
+read the text from the image
+
+computer vision services in microsoft azure:
+1)image analysis
+2)face
+3)optical character recognition
+
+
+------------------------------------------------------------------------------------------------------------------------------------------
+
+UNDERSTAND NATURAL LANGUAGE PROCESSING
+with nlp we can create software that understand written and spoken language
+1)analyze and interpret text in documents,emails
+2)interpt spoken language and synthesize speech responses
+3)automatically translate spoken or written phrases between language
+4)can read commands and determine appropriate actions
+
+NLP in microsoft azure:
+1)azure ai speech
+
+
+------------------------------------------------------------------------------------------------------------------------------------------
+
+UNDERSTANDING DOCUMENT INTELLIGENCE AND KNOWLEDGE MINING
+azure ai document intelligence is a service in azure used to automatic read and process the documents that can be any format
+
+knowledge mining:extract the data from large volumes that can be unstructured and used for searching
+azure ai search service is a service in azure that used to build indexes
+
+------------------------------------------------------------------------------------------------------------------------------------------
+UNDERSTANDING GENERATIVE AI
+
+it takes input as nlp and gives output as variety of format including nlp,image,code and audio
+azure openai service is a service in azure used for chatbot 
+
+------------------------------------------------------------------------------------------------------------------------------------------
+CHALLENGES AND RISKS WITH AI
+
+1)bias can affect results
+2)errors may cause harm
+3)data could be exposed
+4)solutions may not work for everyone
+5)users must trust a complex system
+6)whos liable for ai-driven decizsions
+
+------------------------------------------------------------------------------------------------------------------------------------------
+UNDERSTAND RESPONSIBLE AI
+1)fairness->treat all people without baised
+2)reliability and safety-->automation vehicles or in hospital tools it should be worked correct
+3)privacy and security-->data should be kept private and secure
+4)inclusiveness-->include all the people and treat everyone same
+5)transparency-->should know what ai does and what not
+6)accountability-->should meet the ethical and legal standards that clearly defined
+
+================================================================================================================================================================
+
+FUNDAMENTALS OD MACHINE LEARNING
+
+WHAT IS MACHINE LEARNING:
+data from past observations to predict unknown outcomes or values
+
+
+------------------------------------------------------------------------------------------------------------------------------------------
+TYPES OF MACHINE LEARNING
+
+
+
+supervised machine learning                           unsupervised machine learning
+     |                 |                                 |
+regression             classification                   clustering
+                       |            |
+                  binary             multiclass
+                classification       classification
+
+
+supervised machine learning:[x1,x2,x3],y
+data contains both features(x1,x2,x3) and labels(y)
+the unknown labels can be predicted for features in future cases
+
+regression:(linear regression)
+it gives the output as numeric
+ex:no of ice creams sold on given day based on temp
+no of liters fuel can store in vehicle based on vehicle properties
+price of land based on are
+1)mean absolute error:mean of values
+2)mean squared error:mean of squared of values
+3)root mean squared error:root of mean of squared of values
+4)coefficient of determination(r^2):R2 = 1- ∑(y-ŷ)^2 ÷ ∑(y-ȳ)^2
+
+binary classification:(logistic regression)
+returns true/false or positive/negative
+ex:whether a patient is at risk of diabetics based on age,weight,blood glucose level
+whether a customer takes loan in bank based on income,age,credit history
+whether a customer will respond to mail offers
+1)confusion matrix
+It's a table that shows how well the model is predicting outcomes. It includes True Positives (correctly predicted positives), True Negatives (correctly predicted negatives), False Positives (predicted positive but actually negative), and False Negatives (predicted negative but actually positive).
+2)accuracy
+Simply put, it's how often the model is correct. But it can be misleading if the dataset is imbalanced.
+3)recall
+It's the proportion of correctly predicted positive cases out of all actual positive cases. High recall means few false negatives.
+4)f1-score
+It's a balance between precision and recall. It's useful when you need to consider both false positives and false negatives
+
+
+
+multiclass classification:
+label that represents one of multiple posssible classifies
+ex:the species of a penguin (Adelie, Gentoo, or Chinstrap) based on its physical measurements
+The genre of a movie (comedy, horror, romance, adventure, or science fiction) based on its cast, director, and budget
+two algorithms
+1)one-vs-rest(OvR) algorithms-creates each function to different class
+2)multinomail algorithms-creates single function but contains 3 predicted values in array
+unsupervised machine learning:
+it only contains the features not labels
+
+clustering:
+identifies similarities between observations based on features,groups them into discrete clsuters
+ex:Group similar flowers based on their size, number of leaves, and number of petals
+algorithm:K-Means clustering
+
+
+
+================================================================================================================================================================
+FUNDAMENTALS OF AZURE AI SERVICES
+
+AI SERVICES ON THE AZURE PLATFORM
+azure ai content safety:An AI service that detects unwanted contents
+azure ai language service:Build apps with industry-leading natural language understanding capabilities
+
+azure ai services based on 3 principles:
+1)prebuilt and ready to use
+instead of training the data that takes huge ammount of compoute power, we can use azure prebuilt and ready to use service
+2)accessed through apis
+3)available on azure
+
+------------------------------------------------------------------------------------------------------------------------------------------
+CREATE AZURE AI SERVICE RESOURCES
+1)multi service resource(azure ai services)
+have single key and endpoint for multi ai services
+is is required when u want to work on multi services
+cost and bills are shown together
+2)single service resource
+have unique key and endpoint for single ai service
+is is required when u want to work on single service
+cost and bills are shown single service
+
+
+------------------------------------------------------------------------------------------------------------------------------------------
+USE AZURE AI SERVICES
+
+studio interfaces provides a friendly user interface such as visual studio,language studio,speech studio,content safety studio
+without experience with ai or coding we can use the studio
+
+
+================================================================================================================================================================
+Computer Vision
+
+IMAGE ANALYSIS AZURE
+
+Azure AI Vision supports
+1)optical character recorgnition(ocr)-extracting texxt from images
+2)generating captions and descriptions of images
+3)detecting thousands of common objects in images
+4)tagging visual features in images
+
+------------------------------------------------------------------------------------------------------------------------------------------
+Get started with Face analysis on Azure
+
+1)azure ai vision:returns a boundary of box of coordinates around an image
+2)azure ai video indexer:detect and identify faces in a video
+3)azure ai face:pre-built algorithms that detect and identify faces in a video
+
+
+*********************************************************************************************************************************************************
+
+Three approaches to building ai solutions in azure
+1)use pre-trained models:azure cognitive services
+get intelligence from text,images,audio,video
+2)build simple models:custom vision
+without needing data scientists
+limited/no-code experience
+automated machine learning
+3)build complex models:azure machine learning
+using data scientists and team
+build your own ml models from zero(code-experienced)
+
+Different types of ai workloads
+1)content moderation and personalization-filtering,recommending,adjusting content based on preferences
+2)computer vision workloads- reads data from video
+3)natural language processing workloads - speech,voice recognition
+4)knowledge mining workloads - analysing,extracting,predicting from large dataset
+5)document intelligence workloads - extracts data from documents
+6)generative ai workloads - create new contnet based on given input
+
+
+cognitive services renamed to azure ai services
+1)azure cognitive seach --> azure ai search
+2)custom vision --> azure ai vision
+3)face serice --> azure ai face detection
+4)form recognizer --> azure ai document intelligence
+5)speech service --> azure ai speech service
+6)translator service --> azure ai translator service
+
+APIs
+1)computer vision-analyze content in images and videos
+2)face api-detect and identify people and emotions in images
+3)custom vision-customize image recognition to fit your business
+
+creating cognitive services multi serivices account
+in azure portal search for cognitive services
+|
+in basics tab:
+subscription
+resource group
+region
+name
+pricing tier
+|
+review and create
+
+go to the resource
+|
+open the link: 
+
+understanding face api operations
+1)detect-detect human faces
+2)find similar-find similar faces
+3)group- divide candidates into groups based on face similarity
+4)identity- 1 to many identification
+5)verify-verify the person1 is same as person2
+
+exploring translator and speech api
+1)translator text api:text-to-text translation
+2)speech-to-text api:realtime & batch transcription
+3)text-to-speech:speech synthesis
+4)translation
+
+conversational ai:
+1)qna maker-convert your faq into a q&a bot
+2)azure bot service-build your own bots
+3)recommended architecture-qna maker service+azure bot service
+
+cognitive services
+|
+side panel select qna maker
+|
+create
+in basics tab:
+subscription:
+resource group:
+resource group location:
+name:
+pricing tier:
+|
+create
+
+decision services:
+1)anomaly detector-unusal actions,behavior or errors
+2)content moderator-detect unwanted content
+
+compute
+1)compute instances
+2)compute clsuters
+3)inference clsuters
+4)attached compute
+
+ai principles:
+1)fairness:equality to all
+2)reliability and safety:continues working under unexpexted situations
+3)privacy and security:information and controls
+4)inclusiveness
+
+
+
+
+=============================================================================================================================
