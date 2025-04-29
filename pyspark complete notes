@@ -1,0 +1,197 @@
+Chapter 1. A Gentle Introduction to Spark
+
+WHAT IS APACHE SPARK:
+apache spark is processing system
+spark core consists of 2 APIs
+1)the unstructured APIs
+resilient distributed daasets,accumulators,broadcast Variables
+2)the structured APIs
+dataframes,datasets,spark sql
+
+
+SPARK APPLICATIONS
+  driver process(heart of the spark application)
+------------------            
+|  spark session |---------->executor1
+|   |        |   |---------->executor2
+|   user code    |---------->executor3
+------------------              |
+         |                      |
+   cluster manager--------------|
+
+driver process is responsible for the below:
+1-maintaining information about the spark application
+2-responding to a user program
+3-analysing,distibuting,scheduling work across the executors
+
+executors is responsible for the below:
+1-executing the code given by the driver
+2-send back the reportig state to driver
+
+cluster manager:
+spark standalone cluster manager
+mesos 
+YARN
+
+
+SPARK SESSION
+its an unified entry point for reading data, creating dataframe and executing sql queries in spark.
+it combines sparkcontext+sqlcontext to single object
+ 
+
+
+DATAFRAMES
+a dataframe is a table of data with rows and columns
+list of columns and their types known as schema
+1)partitions
+partitions is nothig but the dataframe is divided into smaller chunks for parallel processing
+spark organizes computation into 2 categories
+transformations
+actions
+
+TRANSFORMATIONS
+spark dataframes are immutable means once created the dataframe we cant change
+so to perform the transformation on a dataframe, we need to create new one with use of existing one
+1)lazy evaluation
+spark will wait until the very last moment to execute your transformations
+
+ACTIONS
+to trigger the computation we run actions
+3 kinds of actions
+1)action to view data in the console   --> show() or take()
+2)action to collect data to native objects in the respective language --> collect()
+3)action to write to output data sources -->write.csv()
+
+
+
+
+==============================================================================
+
+Chapter 2. STRUCTURED API OVERVIEW
+
+SPARK STRUCTURED APIS
+
+two types of data
+1)structured(database table),semistructured data(csv)
+2)unstructured data(poetry,poems)
+
+the structured apis refers to operations on dataframes,datasets and in spark sql
+
+SCHEMA:
+represents the column names and types of a dataframe
+
+OVERVIEW OF STRUCTURED SPARK TYPES
+a)typed API((dataset api)
+b)untyped APIdataframe api)
+
+1)COLUMNS:
+column type is columns in a table
+2)ROWS:
+each record in a dataframe must be of row type
+3)SPARK VALUE TYPES
+1-signed integer numbers : -128 to 127
+2-signed integer numbers : -32768 to 32767
+8-byte signed integer numbers : -9223372036854775808 to 9223372036854775807
+3)encoders:
+encoders are only available in scala
+
+OVERVIEW OF SPARK EXECUTION
+steps of the execution of a single structured api query from user code to executed code
+a)write dataframe/dataset/sql code
+b)if valid code,spark converts this to a logical plan
+c)spark transforms logical plan to physical plan
+d)spark then executes this physical plan on the cluster
+                  code submitted to spark           analyses the plan
+after writing code------------------------>catalyst-------------------->give user the output
+                                           optimizer
+
+1)logical planning
+a)user code and logical plan:
+
+user code: this is the code you write to perform data operations like filtering rows,adding columns etc
+unresolved logical pla:spark converts user code into unresolved logical plan, the plan represents the seq of operations you want to perform but dont know that specified columns in code are present or not
+
+b)catalog lookup
+
+catalog:
+spark maintains a catalog which ia like a database or metadata contains all the tables and its data 
+analyzer:
+analyzer checks the unresolved local plan with catalog to check whether the data is valid or not
+if valid--->create a resolved local plan
+not valid-->throws errors
+
+c)logical plan optimization
+
+optimizer:
+once the plan is resolved passed to optimizer, it is to improve the performance of the query
+transforms logical plan to more efficient version
+
+d)physical plan
+spark generates a physical plan, specifies how to execute the operations on the distributed cluster
+
+2)Physical planning
+after creating optimized logicall plan spark begins the physical planning process
+physical plan often called as spark plan
+how the logical plan will be executed on a cluster with different physical strategies
+
+
+3)Execution
+spark runs all this code over RDD
+
+
+
+
+==============================================================================
+
+Chapter 3. BASIC STRUCTURED OPERATIONS
+
+SCHEMAS
+it defines the column name and its types 
+schemas can be manually set
+
+DATAFRAME TRANSFORMATIONS
+remove columns or rows
+row into a column or column into a row
+add rows or columns
+sort data by values in rows
+
+
+
+
+
+
+
+
+
+
+manual schema-->StructType([structfield("",stringtype(),true)])
+selecting specific columns-->select(col())
+taking first row of df--> first()
+storing a row of data like an array-->Row
+creating a new dataframe-->createDataFrame([row],manual schema)
+selecting multiple columns-->select(column1,column2)
+setting expression like alias-->select(expr(columnname as firstname).alias(new_name))
+selecting column with AS new name-->selectExpr("name as new_name",second_column)
+to add a new column to existing df-->withcolumn("new_name",expression)
+to rename the exisiting column of df-->withColumnRenamed("old_name","new_name")
+to drop columns-->df.drop(column1)
+to change the dataype of specific column-->df.withColumn(columnname,col(columnname).cast("int"))
+filtering the column with expression--> df.filter(col(name)<2)
+where the column with just column-->df.where("count<2")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
