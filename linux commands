@@ -1,0 +1,83 @@
+pwd -> present working directory
+cd -,cd .. -> moves to before folder
+cd,cd ~ -> moves to home folder
+
+/ -> 
+example: 
+1)  /mnt/c/users/sushmitha.a# pwd
+    /mnt/c/users/sushmitha.a
+    root@CLAP2558:/mnt/c/users/sushmitha.a# cd mnt/
+    -bash: cd: mnt/: No such file or directory
+    root@CLAP2558:/mnt/c/users/sushmitha.a# cd /mnt/
+    root@CLAP2558:/mnt# pwd
+    /mnt
+    root@CLAP2558:/mnt#
+
+2)  root@CLAP2558:/# pwd
+    /
+    root@CLAP2558:/# cd root
+    root@CLAP2558:~# pwd
+    /root
+    root@CLAP2558:~# cd ..
+    root@CLAP2558:/# pwd
+    /
+    root@CLAP2558:/# cd /root
+    root@CLAP2558:~# pwd
+    /root
+    root@CLAP2558:~#
+
+ls -> list of all contents
+ls -a -> list of all contents + hidden files
+
+ls -l -> list of all long listing
+example:
+root@CLAP2558:~# ls -l
+total 436
+drwxr-xr-x  8 root root   4096 Apr 18 12:33 dds
+drwxr-xr-x 10 root root   4096 Mar  6 19:12 dds-reports
+drwxr-xr-x  8 root root   4096 Feb 13 19:07 dds-reports1
+drwxr-xr-x  8 root root   4096 Feb 20 18:27 dds-reports3
+drwxr-xr-x  4 root root   4096 Oct 20  2022 env
+-rw-r--r--  1 root root 216643 Apr 20 13:12 out.json
+-rw-r--r--  1 root root 195974 Apr 17 14:20 out1.json
+drwxr-xr-x  3 root root   4096 Feb  1 18:49 snmptpc
+-rw-r--r--  1 root root    358 Nov  8  2022 test_model_generator.py
+drwxr-xr-x  2 root root   4096 Nov  2  2022 wsl-vpnkit
+
+ls -lh,
+ls -l -h,
+ls -hl,
+ls -h -l -> same as -l but gives size of file size in more readable format
+
+mkdir directory_name -> creating a directory
+mkdir -p directory_name/directory_name/directory_name -> creates threedirsdeep
+
+rmdir directory_name -> removes the directory(if the directory empty)
+rmdir -p directory_name/directory_name/directory_name -> removes threedirsdeep(if the directory empty)
+pushd - creates and adds directory to path stack
+popd - removes the directory from stack
+file directory_name or file_name -> describes the type of file(png,docs,directory)
+touch -> create empty file
+rm file_name -> removes the file(deletes the file permanently)
+rm -i file_name -> asks for further yes or no to delete
+rm -rf file_name -> r-recursive,f-force, forcely removing the file
+cp filename_1(Source) filename_2(destination) -> copy 
+cp file_name(source) folder_name(destination) -> copying source to another folder
+cp -r directory_name/(source) directory_name(destination) ->recursive force copies the file to another directory
+cp -r file_1(source) file_2(source) folder_1(source) folder_2(destination) -> copying multiples files and directory to directory
+cp -i file_1(source) folder_1(destination) -> it asks for confirmation for overwritting
+mv file_1 file_2 -> renaming the file_1 to file_2
+mv file_1 direcoty -> moving file_1 to directory
+mv direcoty_1 direcoty_2 -> renaming the direcoty_1 to direcoty_2
+mv -i file_name directory -> moving file to directory with yes or no
+head file_name -> gives the first list of lines in a file
+head -5 file_name -> gives the first 5 lines of a file
+tail file_name -> gives the last lines of a file
+tail -3 file_name -> gives last 3 lines of a file
+cat file_name -> prints the lines of text in a file
+echo text> filename -> writes the text to the file
+cat filename_1 filename_2 > file_3 -> writes the text of filename_1 and filename_2 to the file_3
+cat > filename -> writes the data which we give in filename and press ctl+d 
+cat > filename << stop -> we can write the data into filename until we type stop
+cat filename_1 > filename_2 -> copies the text in filename_2 and over writes it into filename_2
+tac filename -> prints the text in reverse way to cat
