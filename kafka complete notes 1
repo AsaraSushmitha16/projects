@@ -94,6 +94,15 @@ The partition is required when offset is specified.
 --------------------------------------------------------------------------------------------------------------------------------------------------------
 "KAFKA CLUSTER WITH MULTIPLE BROKERS"
 
+#When a Kafka topic is created with multiple partitions in a multi-server (multi-broker) cluster, 
+Kafka automatically tries to distribute those partitions across different brokers rather than placing them all on a single server.
+The reason is simple: fault tolerance and availability. If all partitions of a topic were located on one server and that server went down, 
+then the entire topic would become inaccessible—producers couldn't publish messages, and consumers couldn't read any data.
+However, if the partitions are spread across multiple servers, then if one broker fails, only the partitions on that server are temporarily unavailable, 
+while the remaining partitions (on other brokers) can still accept new messages and serve consumers. 
+This ensures that part of the topic remains operational even if a broker goes offline, 
+enhancing reliability and scalability in distributed Kafka deployments.
+
 
 starting the zookeeper: zookeeper-server-start zookeeper.properties
 starting the server(broker): kafka-server-start server.properties
