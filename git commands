@@ -1,0 +1,406 @@
+GIT COMMANDS
+1) git config:
+to setup the username and email for commits
+git config --global user.name 'sushmitha.a'
+git config --global user.email 'asaradolly@gmail.com'
+
+2)git init:
+create a local repository
+git init
+
+3)git clone:
+copying the remote repository to local
+git clone ssh-link
+
+4)git add:
+used to add one or more files that changed
+git add filename
+
+5)git commit:
+commit the changes to the branch
+git commit -m "commit message" :Use this if you want to select which files or changes to include in the commit by first staging them.
+git commit -a -m "Updated all tracked files" :Use this for a quicker commit that includes all changes to files that are already being tracked, but remember to use git add for new files.
+
+6)git status:
+to check the status of branch like what files are added,not added,tracked,untracked files
+git status
+
+7)git push command:
+to push from local to remote for the changes after commiting local branch
+git push origin branch_name: pushes only specific branch
+git push --all: pushes all branches from local to remote
+
+8)git pull command:
+to pull the latest changes from remote main branch
+git pull origin main
+
+9)git branch commad:
+to check in which branch we are
+git branch
+
+10)git merge command:
+to merge the branch with main in local instead of in ui merge pr
+git merge branch-name
+
+11)git log command:
+to check the commit history
+git log
+----------------------------------------------------------------------------------------------------
+STAGING AND COMMITS
+1)git init
+git init -->initialse the empty repository with in directory
+2)git add
+-git add filename --> to add specific filename to stagging area
+-git add . or git add -A --> to add all the files to stagging area
+
+if we delete one file in repo local and gives the command git status
+it shows delete filename(here we can see that the deleted file is still there in stagging)
+so remove from stagging...we should use the same command
+-git add filename
+
+-git add --ignore-removal . 
+create 2 files
+first.txt , second.txt
+|
+git add .
+|
+delete second.txt from repo
+|
+git status(we can see the deleted file is still in staged, if we want to be in staged and push to branch)
+|
+git add --ignore-removal .
+git commit -m ""
+git push origin branch-name
+|
+we can see the second file which we removed will be there in pushed branch
+
+-git add -u
+Modified Files: file1.txt will be staged for the next commit.
+Deleted Files: file2.txt will be staged as deleted for the next commit.
+New Files: file3.txt will not be staged.
+
+-git add *.txt or git add.py etc
+to add all the same extension files at once
+
+-git reset filename
+to reset the git add file-name
+
+3)git commit
+commit the files with commit message
+git commit: opens one more editor there we need to give the commit message
+git commit -a: opens one more editor there we need to give the commit message, the commit works for only stagged files
+git commit -m "commit message": we can give the commit message in the command itself
+git commit -am "commit message": not need to add the tracked files to be stagged and commited, directly the tracked files can be commited
+git commit --amend:once we commited the message with "first", we can change the last commit message by this command
+
+4)git clone
+copy the remote repository to local
+git clone -b <Branch name><Repository URL>  : creates the empty repository with selected branch
+
+5)git stash
+it is used when we are in middle of the work in one branch and suddenly we want to work in another branch
+we use git stash commands to store the modified files temporary without commiting
+git stash: 
+first branch
+|
+made changes
+suddenly want to work in another branch without commiting the modified files
+|
+git stash
+|
+git checkout another-branch
+|
+do work
+|
+git checkout firstbranch(comeback to first branch)
+|
+git stash pop
+we can continue to work
+
+git stash pop: to stop the stash and continue to work
+git stash save: just giveing message to the stash message
+git stash list: gives the stash list with id
+git stash apply: it is similar to git stash pop, but the only difference is git stash apply stores the stash list, so we can apply the same or other stash in another branches
+this can be usefull when the same changes to 2 branches, we can stash the changes and use it
+
+git stash
+|
+git checkout another-branch
+|
+make changes and we can use first stash in another-branch
+git stash list
+git stash apply stash-id
+|
+this adds changes of first stash to current branch 
+
+git stash show:it shows the recent stash changes like insertion how many and deletion how many and what files are changed
+git stash show -p: it shows the recent stash changes like insertion how many and deletion how many and what files are changed and what changes in detail
+git stash drop: deletes the recent stash 
+git stash drop stash-id: delete the specific stash
+git stash clear: delets all the stashes
+git stash branch branch-name:it creates a stash first, then creates the branch with given branch-name and adds the stash changes to  new branch and deletes the stash id from list
+
+5)git ignore
+6)git fork
+its a copy of the repository
+we cant fork the repo with our own repo,but we can use fork for repo having group of contributors
+fork - create a server-side copy
+clone - local copy
+
+7)git repository
+create a local repository and make it as a git repository
+-create a folder of files that needs tobe in repo
+-git init
+-git status
+-git add
+-git commit -m "commit message"
+cloning an existing repository
+-git clone link
+
+8)git index
+-working directory: the files that changed in working directory before moving to staging area
+-staging area: once changed files are added with git add filename, then the files are in staging area so that we can commit our changes
+this objects are sotred in file called index
+
+9)git head
+git show head : gives the latest commit id and its status
+git log: gives the list of commits
+git show commit-id: gives the info of specific commit
+
+10)git detached head
+when the head doesnt point to the latest commit that means its detached head state
+we can make changes to that detached head state but its not good to commit
+
+11)git origin master(remote repository)
+git master:main branch of the repository
+when we clone to local there will be default branch that is master branch
+any changes to master branch will be effected entir repository and its branch
+git push origin master - push files from local to remote
+git pull origin master - pull files from remte to local
+
+12)git-remote
+git remote - origin which means that the remote name is origin
+git remote -v - shows the no of remote connections available
+git remote add <short-name> <remote-url> - adds the new remote for the repository
+so we can just pull the repo by git pull <short-name>
+git fetch remote origin - it is just to query the changes in remote to local, so that we can pull the next changes
+git remote rm origin - to remove the connections
+git remote rename origin hd - to rename the repo name from origin to hd
+git remote show origin -  shows the no of branches and details of repo
+git remote set-url origin <new url> - to set the new url 
+
+13)git tags
+point as a specific point in git repository
+a branch can have multiple tags
+-annotated tag
+-light weighted tag
+when to use
+to create a release point for a stable version of your code
+to create a historical point that you can refer to resue in future
+git checkout -b "branch_name"
+|
+git tag <tagname> = git tag v1.0
+
+git list tag
+-git tag -gives list of all available tags from the repo
+-git tag show <tagname> -shows specific tag,date,author
+-git tag -l "<pattern>.*" -list of tags with given specific tag pattern
+
+annotated tag
+when pointing or saving final version of project use annotated tag
+git tag <tagname> - m "tag message"
+
+light weight tag
+when saving temprary tags use light weight tag
+git tag <tagname>
+
+14)upstream and downstream
+upstream: the parent or main remote branch
+downstream: the child or feature branches
+to setup the upstream: git push --set-upstream origin branch-name
+
+----------------------------------------------------------------------------------------------------
+UNDOING CHANGES
+1)git checkout
+checkout to another branch: git checkout branch_name
+to create and switch to new branch: git checkout -b "branch_name"
+checkout to branch of remote:
+git fetch --all
+|
+git checkout branch-name
+2)git revert
+touch x1.txt
+a=5
+b=10
+|
+git add . and commit
+commit id= 1234
+a=5
+b=10
+c=15
+d=20
+|
+git add . and commit
+commit id= 5678
+
+now to revert the commit
+git revert 5678
+we can that the changes of that specific commit are gone
+
+git revert merge
+touch x1.txt
+a=5
+b=10
+c=15
+d=20
+git add . and commit
+commit id= 1234
+|
+touch x2.txt
+hi dolly
+git add . and commit
+commit id= 5678
+|
+checkout to main branch
+git checkout main
+now to revert the merge
+git revert 5678
+we can that the changes of that merge are gone
+
+3)git reset
+hard
+touch x1.txt
+|
+git add x1.txt
+|
+git status
+|
+git reset --hard
+this will remove the x1.txt becoz it compares with head and removes whatever not exist in head
+
+
+mixed
+touch x1.txt
+|
+git add x1.txt
+|
+git status
+|
+git reset --hard
+this will remove the x1.txt from tracked to untracked but doesnt delete the file becoz it compares with head and removes whatever not exist in head
+
+soft
+to change the head 
+git reset --soft commitid
+
+4)git rm
+git rm filename: removes file from git and repository
+rm filename: removes file from only repository but not from stagging area
+
+git rm cached:
+to remove the file from git repo but needs to be there in local
+ls
+|
+a1.txt
+|
+git rm --cached a1.txt
+|
+moved the file to untracked
+so we can commit and push without including a1.txt
+
+undo the git rm command
+a)git reset head
+git rm filename ---- removes file from local and repo and moved that file to untracked 
+git reset HEAD ---- it will reset the deleted files, but the files are not in local and repo
+if we need to add file in repo 
+git checkout -- filename
+
+b)git reset --hard
+git rm filename ---- removes file from local and repo and moved that file to untracked 
+git reset --hard ---- it will add the files that has removed and existing changes also reseted
+
+5)git cherry-pick
+in branch: first_branch
+ls --> s1.txt
+git log --> copy the commit id of s1.txt file creation
+git checkout main -->goes to main branch
+git checkout -b "seocnd branch"  -->creates new branch
+git cherry-pick commt-id  --> this branch contains the changes of specific commit changes
+
+
+----------------------------------------------------------------------------------------------------
+INSPECTING CHANGES
+1)git log
+git log --> gives the author,commit message,sha
+git log --oneline  --> gives every commit in single line,7 letters of sha,commit message
+git log -stat --> gives the files that modified
+git log -p or git log --patch --> gives more details of added,removed,updated files
+git log --graph --> to show the commits in graph 
+git log -3 --> gives only recent first 3 commit history
+git log --after="5 days ago"  -> gives the commits after 5 days
+git log --after="2024-12-15" --before="2024-12-14"
+git log --author="author name"
+git log --grep=="commit message" --> to filter the commit by commit message
+
+2)git diff
+git diff --> shows the changes made for a not staged files compares with staged files
+git diff --stagged --> shows the changes made for a tracked files before commiting
+git diff HEAD --> shows the changesmade for not staged files compares with HEAD
+git diff commitid1 commitid2  --> shows the difference between 2 commits
+git diff branch1 branch2 --> shows the difference between 2 branches
+
+3)git status 
+to check the file is stagged,not stagged , untracked
+
+
+----------------------------------------------------------------------------------------------------
+BRANCHING AND MERGING
+1)git branch
+git branch branch_name  --> creates the branch
+git branch or git branch --list --> shows the list of branches
+git branch -d branch_name --> to delete the branch which got merged to main
+git branch -D branch_name --> to delete the branch whether its merged or not no problem
+git push origin --delete branch_name --> to delete the branch in remote
+git checkout branch_name --> to switch branch
+git branch -m <old_name> <new_name>  --> to rename the branch
+git merge branch_name --> to merge the branch
+
+2)MERGE AND MERGE CONFLICT
+git merge <commitid>  --> to merge the specific commit
+
+3)git rebase
+first_branch
+commit1 --> a1.txt
+commit2 --> a2.txt
+commit3 --> a3.txt
+
+second_branch
+commit4 --> a4.txt
+commit5 --> a5.txt
+commit6 --> a6.txt
+
+git rebase first_branch
+commit6 --> a6.txt --> head
+commit5 --> a5.txt
+commit4 --> a4.txt
+commit3 --> a3.txt
+commit2 --> a2.txt
+commit1 --> a1.txt
+Git rebase does not create any commit at rebasing.
+It creates a linear history that can be easily understood.
+
+4)git squash
+Cleaner History: Combining multiple small commits into one makes your commit history easier to read. Instead of seeing every minor change you made, others will see a single commit that summarizes all your changes.
+Useful for Pull Requests: When contributing to a project, you often create a pull request (PR) to merge your changes. Squashing commits can help you provide a clean, organized history for your PR.
+Better Organization: It helps in organizing commits in a meaningful way, making it easier to understand the purpose of each commit.
+squash is used to squash the previous commits into one
+
+
+----------------------------------------------------------------------------------------------------
+
+COLLABORATING
+
+1)git fetch
+The "git fetch" command is used to pull the updates from remote-tracking branches
+2)git pull
+3)git push
