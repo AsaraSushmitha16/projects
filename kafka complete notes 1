@@ -177,6 +177,13 @@ This replication ensures that even if a broker goes down, the data remains acces
 the system continues functioning without data loss. Kafka manages which broker holds the leader and followers of each partition, 
 making the process seamless and reliable.
 
+#In Kafka, each partition has a leader that handles all read and write requests for that partition. 
+The other replicas of the same partition that stay in sync with the leader are called in-sync replicas (ISR).
+These ISRs reside on different brokers and continuously replicate the data from the leader. 
+If a broker hosting a leader partition goes down, Kafka automatically elects one of the in-sync replicas to become the new leader. 
+This new leader then starts handling all client requests for that partition. 
+This automatic leader failover mechanism ensures high availability and uninterrupted message flow, even if one broker fails, 
+as long as there is at least one in-sync replica available.
 ->
 
 starting the zookeeper: zookeeper-server-start zookeeper.properties
