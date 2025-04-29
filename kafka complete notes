@@ -1,0 +1,1288 @@
+zookeeper-server-start zookeeper.properties
+kafka-server-start server.properties
+
+kafka-topics --create --topic hello-world --bootstrap-server localhost:9092 partitions 1 
+
+kafka-console-producer --topic hello-world --bootstrap-server localhost:9092
+kafka-console-consumer --topic hello-world --from-beginning --bootstrap-server localhost:9092 
+
+--------------------------------------------------------------------------------------------------------------------------------------------------------
+"MULTIPLE PRODUCER & MULTIPLE CONSUMER IN A KAFKA TOPIC"
+
+starting the zookeeper: zookeeper-server-start zookeeper.properties
+starting the server(broker): kafka-server-start server.properties
+
+creating the topic: kafka-topics --create --topic hello-world --bootstrap-server localhost:9092 --replication-factor 1 partitions 1 
+
+starting the first producer: kafka-console-producer --topic hello-world --bootstrap-server localhost:9092
+starting the first consumer: kafka-console-consumer --topic hello-world --from-beginning --bootstrap-server localhost:9092
+
+in producer1 we can produce the messages and consumer1 will consume the messages from beginning
+will start consumer2:  kafka-console-consumer --topic hello-world --bootstrap-server localhost:9092
+will read the messages from producer1 not from beginning
+
+will start producer2: kafka-console-producer --topic hello-world --bootstrap-server localhost:9092
+
+now from both the producers we are sending msgs and both consumer consuming the msgs
+if one of the producer down also, consumer will read msgs from other
+
+
+--------------------------------------------------------------------------------------------------------------------------------------------------------
+"TOPIC WITH MULTIPLE PARTITIONS"
+
+starting the zookeeper: zookeeper-server-start zookeeper.properties
+starting the server(broker): kafka-server-start server.properties
+
+creating the topic: kafka-topics --create --topic hello_world --bootstrap-server localhost:9092 --replication-factor 1 partitions 3 
+
+running the python code round-robin-for-topic-with-multiple-partitions.py for roundrobin algorithm
+while running it will go the specific partition based on hash algorithm
+
+starting the consumer: kafka-console-consumer --topic hello-world --from-beginning --bootstrap-server localhost:9092
+will read the messages from beginning but not in the specific order because the number of partitions are greater than 1
+
+stored messages like below in server
+partition 0: message1,message4,message7,message10
+partition 1: message2,message5,message8,message11
+partition 2: message3,message6,message9,message12
+
+============
+
+->reading the messages from specific partition:
+in consumer we can use the command: kafka-console-consumer --topic hello-world --from-beginning --bootstrap-server localhost:9092 --partition 2
+
+============
+
+
+->reading the messages from specific partition and specific offset:
+in consumer we can use the command: 
+D:\kafka\bin\windows\kafka-console-consumer --topic hello_world --bootstrap-server localhost:9092 --partition 0 --offset 0
+message1
+message4
+message7
+message10
+Processed a total of 4 messages
+
+and
+D:\kafka\bin\windows\kafka-console-consumer --topic hello_world --bootstrap-server localhost:9092 --partition 0 --offset 1
+message4
+message7
+message10
+Processed a total of 3 messages
+
+from the offset it will read, not from the beginning values of offset
+
+
+============
+
+->reading the messages from specific offset:
+D:\kafka\bin\windows\kafka-console-consumer --topic hello_world --bootstrap-server localhost:9092 --offset 0
+The partition is required when offset is specified.
+
+
+--------------------------------------------------------------------------------------------------------------------------------------------------------
+"KAFKA CLUSTER WITH MULTIPLE BROKERS"
+
+
+starting the zookeeper: zookeeper-server-start zookeeper.properties
+starting the server(broker): kafka-server-start server.properties
+
+creating the topic: kafka-topics --create --topic hello_world --bootstrap-server localhost:9092 --replication-factor 1 partitions 3 
+
+running the python code round-robin-for-topic-with-multiple-partitions.py for roundrobin algorithm
+
+while running it will go the specific partition based on hash algorithm
+
+starting the consumer: kafka-console-consumer --topic hello-world --from-beginning --bootstrap-server localhost:9092
+will read the messages from beginning but not in the specific order because the number of partitions are greater than 1
+
+stored like below in server
+partition 0: message1,message4,message7,message10
+partition 1: message2,message5,message8,message11
+partition 2: message3,message6,message9,message12
+
+if we stop the server, then in consumer and producer shows error that WARN [Consumer clientId=console-consumer, groupId=console-consumer-30236] Connection to node 0 (CLAP2558.prodapt.com/192.168.56.1:9092) could not be established. Broker may not be available. (org.apache.kafka.clients.NetworkClient)
+we have only one server, if that is down then entire clsuter is down, so we are unable to read msgs from producer
+
+============
+
+->so starting the multiple servers with multiple partitions
+
+starting the zookeeper: zookeeper-server-start zookeeper.properties
+starting the server0(broker0): kafka-server-start server0.properties
+starting the server1(broker1): kafka-server-start server1.properties
+starting the server2(broker2): kafka-server-start server2.properties
+
+creating the topic: kafka-topics --create --topic hello_world1 --bootstrap-server localhost:9092,localhost:9093,localhost:9094 --replication-factor 1 partitions 5 
+
+server0:
+partitions are:hello_world1-1,hello_world1-4
+server1:
+partitions are:hello_world1-0,hello_world1-3
+server2:
+partitions are::hello_world1-2
+
+running the python code round-robin-for-topic-with-multiple-partitions.py for roundrobin algorithm
+
+server0:
+partitions are:
+hello_world1-1 (messages are): message2,message7,message12
+hello_world1-4 (messages are): message5,message10
+
+
+server1:
+partitions are:
+hello_world1-0 (messages are): message1,message6,message11
+hello_world1-3 (messages are): message4,message9
+
+
+server2:
+partitions are:
+hello_world1-2 (messages are): message3,message8
+
+if we stop the server0, then the messages in that specific server will not consumed by consumer.
+but if we try to run the broker(server0) is up and running again, we can restart the consumer so messages can be restored.
+
+
+--------------------------------------------------------------------------------------------------------------------------------------------------------
+"TOPIC WITH REPLICATION IN MULTIPLE BROKERS"
+
+
+->
+
+starting the zookeeper: zookeeper-server-start zookeeper.properties
+starting the server0(broker0): kafka-server-start server0.properties
+starting the server1(broker1): kafka-server-start server1.properties
+starting the server2(broker2): kafka-server-start server2.properties
+
+creating the topic: kafka-topics --create --topic hello_world1 --bootstrap-server localhost:9092,localhost:9093,localhost:9094 --replication-factor 3 partitions 7 
+
+server0:
+partitions are:
+hello_world1-0
+hello_world1-1
+hello_world1-2
+hello_world1-3
+hello_world1-4
+hello_world1-5
+hello_world1-6
+
+server1:
+partitions are:
+hello_world1-0
+hello_world1-1
+hello_world1-2
+hello_world1-3
+hello_world1-4
+hello_world1-5
+hello_world1-6
+
+server2:
+partitions are:
+hello_world1-0
+hello_world1-1
+hello_world1-2
+hello_world1-3
+hello_world1-4
+hello_world1-5
+hello_world1-6
+
+D:\kafka\bin\windows\kafka-topics --bootstrap-server localhost:9092,localhost:9093,localhost:9094 --describe --topic hello_world1
+
+output:
+Topic: hello_world1     TopicId: t-FoO5VrRLuCPBdDrA5FGA PartitionCount: 7       ReplicationFactor: 3    Configs: segment.bytes=1073741824
+        Topic: hello_world1     Partition: 0    Leader: 0       Replicas: 0,1,2 Isr: 0,1,2                                               
+        Topic: hello_world1     Partition: 1    Leader: 2       Replicas: 2,0,1 Isr: 2,0,1                                               
+        Topic: hello_world1     Partition: 2    Leader: 1       Replicas: 1,2,0 Isr: 1,2,0                                               
+        Topic: hello_world1     Partition: 3    Leader: 0       Replicas: 0,2,1 Isr: 0,2,1                                               
+        Topic: hello_world1     Partition: 4    Leader: 2       Replicas: 2,1,0 Isr: 2,1,0                                               
+        Topic: hello_world1     Partition: 5    Leader: 1       Replicas: 1,0,2 Isr: 1,0,2
+        Topic: hello_world1     Partition: 6    Leader: 0       Replicas: 0,1,2 Isr: 0,1,2
+
+
+running the python code round-robin-for-topic-with-multiple-partitions.py for roundrobin algorithm
+messages are stored as below
+server0:
+partitions are:
+hello_world1-0: message1,message8
+hello_world1-1: message2,message9
+hello_world1-2: message3,message10
+hello_world1-3: message4,message11
+hello_world1-4: message5,message12
+hello_world1-5: message6
+hello_world1-6: message7
+
+server1:
+partitions are:
+hello_world1-0: message1,message8
+hello_world1-1: message2,message9
+hello_world1-2: message3,message10
+hello_world1-3: message4,message11
+hello_world1-4: message5,message12
+hello_world1-5: message6
+hello_world1-6: message7
+
+server2:
+partitions are:
+hello_world1-0: message1,message8
+hello_world1-1: message2,message9
+hello_world1-2: message3,message10
+hello_world1-3: message4,message11
+hello_world1-4: message5,message12
+hello_world1-5: message6
+hello_world1-6: message7
+
+if one of the server is down, remainin two will work and consumer can consume all the messages
+if 2 of the servers are down...its the same
+but the below will change
+D:\kafka\bin\windows\kafka-topics --bootstrap-server localhost:9092,localhost:9093,localhost:9094 --describe --topic hello_world1
+Topic: hello_world1     TopicId: xbqwkduST1aebDN2dGBjfA PartitionCount: 7       ReplicationFactor: 3    Configs: segment.bytes=1073741824
+        Topic: hello_world1     Partition: 0    Leader: 2       Replicas: 2,0,1 Isr: 2,0,1
+        Topic: hello_world1     Partition: 1    Leader: 2       Replicas: 1,2,0 Isr: 2,0,1
+        Topic: hello_world1     Partition: 2    Leader: 2       Replicas: 0,1,2 Isr: 2,0,1
+        Topic: hello_world1     Partition: 3    Leader: 2       Replicas: 2,1,0 Isr: 2,0,1
+        Topic: hello_world1     Partition: 4    Leader: 2       Replicas: 1,0,2 Isr: 2,0,1
+        Topic: hello_world1     Partition: 5    Leader: 2       Replicas: 0,2,1 Isr: 2,0,1
+        Topic: hello_world1     Partition: 6    Leader: 2       Replicas: 2,0,1 Isr: 2,0,1
+
+once the brokers down comes to up and running then again the leader will be asusal as before
+
+
+
+
+--------------------------------------------------------------------------------------------------------------------------------------------------------
+"IN-DEPTH INTUITION ON KAFKA RACK AWARENESS WITH PRACTICAL DEMO"
+ __________                   
+| broker0  |        
+|          |
+|          |
+| broker1  |
+|          |
+|          |
+|__________|
+ rack1
+ __________
+| broker2  |
+|          |
+|          |
+|          |
+|          |
+|          |
+|__________|
+rack2
+
+each rack contains datanodes in hdfs, so same way in kafka there are racks inside that brokers will present
+broker0,broker1 are present in rack1
+broker2 is present in rack2
+in case of data fail we are replicating the brokers in different rack
+broker0,broker1,broker2 contains the same data
+if rack1 is failed due to network issue then rack2 will used, for that reasonwe are making it replica in rack2 with same data
+
+starting the zookeeper: zookeeper-server-start zookeeper.properties
+starting the server0(broker0): kafka-server-start server0.properties
+starting the server1(broker1): kafka-server-start server1.properties
+starting the server2(broker2): kafka-server-start server2.properties
+
+creating the topic: kafka-topics --create --topic hello_world1 --bootstrap-server localhost:9092,localhost:9093,localhost:9094 --replication-factor 2 partitions 1 
+
+server0:
+partitions are:hello_world1-0
+server1:
+partitions are:hello_world1-0
+server2:
+partitions are 0 because replication factor is 2, so kafka will not allocate the partition for 3rd server
+
+checking how many brokers are running:  D:\kafka\bin\windows\zookeeper-shell localhost:2181 ls /brokers/ids
+
+checking how many the leader and replicas allocated:
+D:\kafka\bin\windows\kafka-topics --bootstrap-server localhost:9092,localhost:9093,localhost:9094 --describe --topic hello_world1
+it will allocate that leaders are 0,1 servers, but they both are in same rack1, so if rack1 fails we may lost the data
+
+->setting the broker.rack:
+in server0.properties and server1.properties set broker.rack=1
+in server2.properties set broker.rack=2
+so after this try again creating new topic 
+
+creating the topic: kafka-topics --create --topic hello_world2 --bootstrap-server localhost:9092,localhost:9093,localhost:9094 --replication-factor 2 partitions 1 
+
+server0:
+partitions are:hello_world2-0
+server1:
+partitions are:hello_world2-0
+server2:
+partitions are 0 because replication factor is 1, so kafka will not allocate the partition for 3rd server
+
+checking how many brokers are running:  D:\kafka\bin\windows\zookeeper-shell localhost:2181 ls /brokers/ids
+[0,1,2]
+checking how many the leader and replicas allocated:
+D:\kafka\bin\windows\kafka-topics --bootstrap-server localhost:9092,localhost:9093,localhost:9094 --describe --topic hello_world2
+it will allocate that leaders are 0,2 servers, so if rack1 fails we may not lost the data because rack2 is available
+
+
+
+--------------------------------------------------------------------------------------------------------------------------------------------------------
+"KAFKA LOG SEGMENTS IN-DEPTH INTUITION"
+
+topic--->partition--->offset
+
+each partition are divided into offsets
+
+starting the zookeeper: zookeeper-server-start zookeeper.properties
+starting the server(broker): kafka-server-start server.properties
+
+in server.properties change the value log.segment.bytes to 1000 so the files are filled 1000bytes then another file will be created
+
+creating the topic: kafka-topics --create --topic hello_world --bootstrap-server localhost:9092 --replication-factor 1 partitions 1
+run the program log_segments python file to generate 100 numbers and consumer starts consuming the messages from cluster
+
+when we see the logs in specific partition there will be no.of files of txt which will be divided on 1000bytes
+
+
+--------------------------------------------------------------------------------------------------------------------------------------------------------
+"KAFKA PRODUCER KEY AND MESSAGE ACKNOWLEDGEMENTS"
+
+if key=0, the messages are stored in the roundrobin way
+if key=1, the messages are sent to the specific partition
+for that 2 properties are required, parse.key=true and key.seperator=:
+
+starting the zookeeper: zookeeper-server-start zookeeper.properties
+starting the server(broker): kafka-server-start server.properties
+
+creating the topic: kafka-topics --create --topic hello_world --bootstrap-server localhost:9092 --replication-factor 1 partitions 2
+
+start the producer: kafka-console-producer --bootstrap-server localhost:9092 --property 'parse.key=true' --property 'key.seperator=:' --topic hello-world 
+>101:'hi'
+>102:'hello'
+>103:'good'
+>101:'well'
+>102:'hey'
+>101:'iam'
+so the messages under 102 goes to partition2 and other will go to partition1
+
+-->
+ack=0, after consuming the message from broker, consumer will not provide any acknowledgement to broker that recieved data
+ack=1, after consuming the message from broker, consumer will provide acknowledgement to broker that recieved data
+ack=all, after consuming the message from broker, consumer will provide acknowledgement to broker when all the leaders and in-sync replicas recieved the data(this have latency becoz all the leaders and in-sync replicas needs to get data and very safety)
+
+--------------------------------------------------------------------------------------------------------------------------------------------------------
+"KAFKA TOPIC PARTITIONS AND PRODUCERS USING PYTHON"
+with_partition.py file
+1) using the single partition to send message
+2) using key and value to send messages(messages which contain same keys will go to specific partitioner)
+3) same as 2nd but we use key_serializer and value_serializer
+4) using the function we are getting the partition and sending messages
+
+
+--------------------------------------------------------------------------------------------------------------------------------------------------------
+"BUFFER.MEMORY, MAX.BLOCK.MS & PRODUCER IO THREAD IN KAFKA"
+
+producer-->broker-->topic-->partition-->buffer(record accumulator)-->I/O thread-->Kafka cluster
+
+so buffer have 2 properties
+1)buffer.memory --> default 25mb
+2)max.block.ms -->milli seconds
+
+the file of buffer size is based on the above 2 properties, if one of the condition satisfies it will send that batch of data to I/O thread
+so we use flush() and close() if the msgs are still there in buffer file but didnt push to cluster
+
+
+starting the zookeeper: zookeeper-server-start zookeeper.properties
+starting the server(broker): kafka-server-start server.properties
+
+creating the topic: kafka-topics --create --topic hello_world --bootstrap-server localhost:9092 --replication-factor 1 partitions 1
+run the python code: flush_concept
+which consumer consumes data till 997 but 998,999 will be stred in buffer which consumer cant consume those 2 records
+
+so we use fluch() and close() to consume the all records
+
+
+--------------------------------------------------------------------------------------------------------------------------------------------------------
+"IN-DEPTH INTUITION ON DIFFERENT WAYS TO SEND MESSAGES TO KAFKA TOPIC USING PYTHON"
+
+1)FIRE AND FORGET:
+starting the zookeeper: zookeeper-server-start zookeeper.properties
+starting the server(broker): kafka-server-start server.properties
+
+creating the topic: kafka-topics --create --topic hello_world --bootstrap-server localhost:9092 --replication-factor 1 partitions 1
+start the consumer:>D:\kafka\bin\windows\kafka-console-consumer --topic hello_world --bootstrap-server localhost:9092
+run the python code: different_ways
+
+the python script will run the messages and consumer consumes it
+if the server is down, we can see error messages in consumer console but still the script producer will produce the messages
+so this the concept of fire and forgot, producer produces the messages but does not care whether consumer consumers it or not and there is no acknowledgement sent by consumer that till here we recieved messages.
+disadvantages: client does not know whether the messages are reached or not
+
+2)synchronous send
+starting the zookeeper: zookeeper-server-start zookeeper.properties
+starting the server(broker): kafka-server-start server.properties
+
+creating the topic: kafka-topics --create --topic hello_world --bootstrap-server localhost:9092 --replication-factor 1 partitions 1
+start the consumer:>D:\kafka\bin\windows\kafka-console-consumer --topic hello_world --bootstrap-server localhost:9092
+run the python code: different_ways
+
+the python script will run the messages and consumer consumes it
+if the server is down, we can see error messages in consumer console and exception error in producer scirpt console
+this means that its sending acknowledgement that broker having issue
+
+disadvantages: as it is synchronous, it will produce the messages in order, but here timetaking process.each time it should wait for 10secs
+
+3)asynchronous send(success)
+starting the zookeeper: zookeeper-server-start zookeeper.properties
+starting the server(broker): kafka-server-start server.properties
+
+creating the topic: kafka-topics --create --topic hello_world --bootstrap-server localhost:9092 --replication-factor 1 partitions 1
+start the consumer:>D:\kafka\bin\windows\kafka-console-consumer --topic hello_world --bootstrap-server localhost:9092
+run the python code: different_ways
+the producer shows the success message after successfully consumed by consumer
+
+
+4)asynchronous send(failure)
+starting the zookeeper: zookeeper-server-start zookeeper.properties
+starting the server(broker): kafka-server-start server.properties
+
+creating the topic: kafka-topics --create --topic hello_world --bootstrap-server localhost:9092 --replication-factor 1 partitions 1
+start the consumer:>D:\kafka\bin\windows\kafka-console-consumer --topic hello_world --bootstrap-server localhost:9092
+run the python code: different_ways
+the producer shows the messages that are sent, now if broker go down then consumer shows error in console and producer also shows error in console that from where it got failed to send messages
+
+
+
+--------------------------------------------------------------------------------------------------------------------------------------------------------
+"KAFKA CONSUMER GROUPS CLI DEMO | KAFKA-PYTHON"
+
+
+
+starting the zookeeper: zookeeper-server-start zookeeper.properties
+starting the server(broker): kafka-server-start server.properties
+
+creating the topic: kafka-topics --create --topic hello_world --bootstrap-server localhost:9092 --replication-factor 1 partitions 3
+start the first consumer:>D:\kafka\bin\windows\kafka-console-consumer --topic hello_world --from-beginning --bootstrap-server localhost:9092
+run the producer: consumer_group.py
+
+consumer strats to consume the messages
+
+start the second consumer:>D:\kafka\bin\windows\kafka-console-consumer --topic hello_world --from-beginning --bootstrap-server localhost:9092
+
+both consumer1 and consumer2 will start consuming the same messages
+
+now stop both the consumers and start with below consumers
+
+start the first consumer:>D:\kafka\bin\windows\kafka-console-consumer --topic hello_world --from-beginning --bootstrap-server localhost:9092 --group --from-the-first-consumer
+start the second consumer:>D:\kafka\bin\windows\kafka-console-consumer --topic hello_world --from-beginning --bootstrap-server localhost:9092 --group --from-the-first-consumer
+
+if one of the consumer consumes data then second consumer will not consume that means both consumer will not consume the same data in same group
+
+start the third consumer:>D:\kafka\bin\windows\kafka-console-consumer --topic hello_world --from-beginning --bootstrap-server localhost:9092 --group --from-the-first-consumer
+
+as there are 3 partitions, so each partition data will go to each consumer
+
+start the fourth consumer:>D:\kafka\bin\windows\kafka-console-consumer --topic hello_world --from-beginning --bootstrap-server localhost:9092 --group --from-the-first-consumer
+
+as each data goes to specific consumer so 4th consumer will sit idle and if one of the consumer stops consuming the data then 4th consumer will start consuming in the same consumer group
+
+
+
+--------------------------------------------------------------------------------------------------------------------------------------------------------
+"KAFKA CONSUMER USING PYTHON & CONCEPT OF OFFSET-COMMIT"
+
+lets assume there are 4 partitions and 4 consumers
+each partition data will be consumed by each Consumer
+if one of the consumer goes down so now there are 3 consumers but 4 partitions
+in that case
+1st consumer--> 1st partition
+2nd consumer--> 2nd partition
+3rd consumer--> 3rd and 4th partition
+
+but 3rd consumer dont know from where the data it has to read for 4th partition or till where the 4th consumer read 
+so for that there is option called offset, offset will commit till where is consumer which is down have read
+the offset is stored in __consumer_offset(internal topic)
+
+there are 2 ways to read data from kafka
+1) consumer:>D:\kafka\bin\windows\kafka-console-consumer --topic hello_world --from-beginning --bootstrap-server localhost:9092
+reads data from beginning
+
+2) consumer:>D:\kafka\bin\windows\kafka-console-consumer --topic hello_world --bootstrap-server localhost:9092
+reads data from at that particular time
+
+auto_offset_reset='latest':
+
+starting the zookeeper: zookeeper-server-start zookeeper.properties
+starting the server(broker): kafka-server-start server.properties
+
+creating the topic: kafka-topics --create --topic hello_world4 --bootstrap-server localhost:9092 --replication-factor 1 partitions 1
+run the producer: offset.py
+run the consumer:>consumer_offset.py
+
+the consumer runs data from at that particular time because its auto_offset_reset='latest'
+if the produced messages 1...10,11,12
+consumer is stoped at 10
+now again if we start the consumer it will read from where it left of 11,12,13...
+because its commied the offset
+
+
+auto_offset_reset='earliest':
+
+starting the zookeeper: zookeeper-server-start zookeeper.properties
+starting the server(broker): kafka-server-start server.properties
+
+creating the topic: kafka-topics --create --topic hello_world4 --bootstrap-server localhost:9092 --replication-factor 1 partitions 1
+run the producer: offset.py
+run the consumer:>consumer_offset.py
+
+the consumer runs data from first_message to the at that particular time because its auto_offset_reset='earliest'
+if the produced messages 1...10,11,12
+consumer is stoped at 10
+now again if we start the consumer it will read from where it left of 10,11,12,13...
+because its commied the offset it will read one message earlier
+
+
+
+
+--------------------------------------------------------------------------------------------------------------------------------------------------------
+"MANUAL OFFSET COMMITS & EXACTLY-ONCE PROCESSING IN KAFKA CONSUMER USING PYTHON"
+
+starting the zookeeper: zookeeper-server-start zookeeper.properties
+starting the server(broker): kafka-server-start server.properties
+
+creating the topic: kafka-topics --create --topic hello_world --bootstrap-server localhost:9092 --replication-factor 1 partitions 2
+producer:run offset.py 
+consumer1:exactly-once-consumer1.py
+consumer2:exactly-once-consumer2.py
+
+so the partitions are assigned to specific consumer, if 1 consumer down other will pick the data of that consumer
+in exactly-once: no duplicates the data will be offset commited once its Processed,if system failure also it will not loose the data
+ 
+--------------------------------------------------------------------------------------------------------------------------------------------------------
+"UNDERSTANDING KAFKA PARTITION ASSIGNMENT STRATEGIES WITH IN-DEPTH INTUITION AND PRACTICAL USING PYTHON"
+
+there are two ways that consumer consumes the data from partition
+1)range partition (partition_assignment_strategy=[RangePartitionAssignor])
+for example there are 6 partitions 0,1,2,3,4,5
+consumer1 will read data from 0,1,2 partitions and consumer2 will read data from 3,4,5 partitions 
+2)roundrobin partition (partition_assignment_strategy=[RoundRobinPartitionAssignor])
+hash algorithm 
+for example there are 6 partitions 0,1,2,3,4,5
+consumer1 will read data from 0,2,4 partitions and consumer2 will read data from 1,3,5 partitions 
+
+
+starting the zookeeper: zookeeper-server-start zookeeper.properties
+starting the server(broker): kafka-server-start server.properties
+
+creating the topic: kafka-topics --create --topic hello_world --bootstrap-server localhost:9092 --replication-factor 1 partitions 2
+
+
+producer:producer-with-partition.py
+consumer1:consumer-with-partition1.py
+consumer2:consumer-with-partition2.py
+
+
+--------------------------------------------------------------------------------------------------------------------------------------------------------
+"APACHE KAFKA CONSUMER LAG ANALYSIS IN-DEPTH INTUITION"
+
+
+starting the zookeeper: zookeeper-server-start zookeeper.properties
+starting the server(broker): kafka-server-start server.properties
+
+creating the topic: kafka-topics --create --topic hello_world --bootstrap-server localhost:9092 --replication-factor 1 partitions 2
+
+
+producer:producer-with-partition.py
+consumer1:consumer-lag1.py
+consumer2:consumer-lag2.py
+
+to check the lag:D:\kafka\bin\windows\kafka-consumer-groups --bootstrap-server localhost:9092 --group demo --describe
+
+so if we start only first consumer we can see more lag
+if we start the both the consumer the lag will be constant
+
+
+--------------------------------------------------------------------------------------------------------------------------------------------------------
+"why do .index & .timeindex files exist in the kafka-log directory?"
+
+.index file:
+
+starting the zookeeper: zookeeper-server-start zookeeper.properties
+starting the server(broker): kafka-server-start server.properties
+
+creating the topic: kafka-topics --create --topic hello_world --bootstrap-server localhost:9092 --replication-factor 1 partitions 1
+
+
+producer:indexing_example.py
+we see that messages are stored in server_logs
+there is a file called 00000000000000000000.index in server_logs
+
+earlier it was very hard to read data for consumer where the offset is stored and which position the data is stored
+for that we have index
+index makes the searching alogithm is easy and uses binary-search
+
+to check the offsets are stored in which position:
+D:\kafka\bin\windows\kafka-run-class kafka.tools.DumpLogSegments --files D:\kafka_logs\server_logs\hello_world-0\00000000000000000000.index --deep-iteration --print-data-log
+
+to check the properties of topic:
+D:\kafka\bin\windows\kafka-configs --entity-type topics --entity-name hello_world --describe --all --bootstrap-server localhost:9092
+
+
+.timeindex file:
+
+to check the messages or offset in particular timestamp or from the timestamp:
+D:\kafka\bin\windows\kafka-run-class kafka.tools.DumpLogSegments --files D:\kafka_logs\server_logs\hello_world-0\00000000000000000000.timeindex --deep-iteration --print-data-log
+
+
+log file:
+D:\kafka\bin\windows\kafka-run-class kafka.tools.DumpLogSegments --files D:\kafka_logs\server_logs\hello_world-0\00000000000000000000.log --deep-iteration --print-data-log
+
+broker knows the specific offset is stored 
+the offsets are stored in multiple files, each file is renamed to offset number
+
+for example iam reading the log of 59th as below, so it contains 59-78 and other file start from 79-:
+
+D:\kafka\bin\windows\kafka-run-class kafka.tools.DumpLogSegments --files D:\kafka_logs\server_logs\hello_world-0\00000000000000000059.log --deep-iteration --prin
+t-data-log
+Dumping D:\kafka_logs\server_logs\hello_world-0\00000000000000000059.log
+Log starting offset: 59
+baseOffset: 59 lastOffset: 67 count: 9 baseSequence: -1 lastSequence: -1 producerId: -1 producerEpoch: -1 partitionLeaderEpoch: 0 isTransactional: false isControl: false deleteHorizonM
+s: OptionalLong.empty position: 0 CreateTime: 1711006201455 size: 268 magic: 2 compresscodec: none crc: 255525087 isvalid: true
+| offset: 59 CreateTime: 1711006201454 keySize: -1 valueSize: 16 sequence: -1 headerKeys: [] payload: {"number": 1302}
+| offset: 60 CreateTime: 1711006201454 keySize: -1 valueSize: 16 sequence: -1 headerKeys: [] payload: {"number": 1303}
+| offset: 61 CreateTime: 1711006201455 keySize: -1 valueSize: 16 sequence: -1 headerKeys: [] payload: {"number": 1304}
+| offset: 62 CreateTime: 1711006201455 keySize: -1 valueSize: 16 sequence: -1 headerKeys: [] payload: {"number": 1305}
+| offset: 63 CreateTime: 1711006201455 keySize: -1 valueSize: 16 sequence: -1 headerKeys: [] payload: {"number": 1306}
+| offset: 64 CreateTime: 1711006201455 keySize: -1 valueSize: 16 sequence: -1 headerKeys: [] payload: {"number": 1307}
+| offset: 65 CreateTime: 1711006201455 keySize: -1 valueSize: 16 sequence: -1 headerKeys: [] payload: {"number": 1308}
+| offset: 66 CreateTime: 1711006201455 keySize: -1 valueSize: 16 sequence: -1 headerKeys: [] payload: {"number": 1309}
+| offset: 67 CreateTime: 1711006201455 keySize: -1 valueSize: 16 sequence: -1 headerKeys: [] payload: {"number": 1310}
+baseOffset: 68 lastOffset: 75 count: 8 baseSequence: -1 lastSequence: -1 producerId: -1 producerEpoch: -1 partitionLeaderEpoch: 0 isTransactional: false isControl: false deleteHorizonM
+s: OptionalLong.empty position: 268 CreateTime: 1711006201459 size: 245 magic: 2 compresscodec: none crc: 2000192531 isvalid: true
+| offset: 68 CreateTime: 1711006201458 keySize: -1 valueSize: 16 sequence: -1 headerKeys: [] payload: {"number": 1311}
+| offset: 69 CreateTime: 1711006201458 keySize: -1 valueSize: 16 sequence: -1 headerKeys: [] payload: {"number": 1312}
+| offset: 70 CreateTime: 1711006201459 keySize: -1 valueSize: 16 sequence: -1 headerKeys: [] payload: {"number": 1313}
+| offset: 71 CreateTime: 1711006201459 keySize: -1 valueSize: 16 sequence: -1 headerKeys: [] payload: {"number": 1314}
+| offset: 72 CreateTime: 1711006201459 keySize: -1 valueSize: 16 sequence: -1 headerKeys: [] payload: {"number": 1315}
+| offset: 73 CreateTime: 1711006201459 keySize: -1 valueSize: 16 sequence: -1 headerKeys: [] payload: {"number": 1316}
+| offset: 74 CreateTime: 1711006201459 keySize: -1 valueSize: 16 sequence: -1 headerKeys: [] payload: {"number": 1317}
+| offset: 75 CreateTime: 1711006201459 keySize: -1 valueSize: 16 sequence: -1 headerKeys: [] payload: {"number": 1318}
+baseOffset: 76 lastOffset: 78 count: 3 baseSequence: -1 lastSequence: -1 producerId: -1 producerEpoch: -1 partitionLeaderEpoch: 0 isTransactional: false isControl: false deleteHorizonM
+s: OptionalLong.empty position: 513 CreateTime: 1711006201462 size: 130 magic: 2 compresscodec: none crc: 1738895853 isvalid: true
+| offset: 76 CreateTime: 1711006201461 keySize: -1 valueSize: 16 sequence: -1 headerKeys: [] payload: {"number": 1319}
+| offset: 77 CreateTime: 1711006201461 keySize: -1 valueSize: 16 sequence: -1 headerKeys: [] payload: {"number": 1320}
+| offset: 78 CreateTime: 1711006201462 keySize: -1 valueSize: 16 sequence: -1 headerKeys: [] payload: {"number": 1321}
+PS D:\aa_kafka_python> 
+
+
+
+
+--------------------------------------------------------------------------------------------------------------------------------------------------------
+"Schema registry"
+
+the producer produces the message and consumer consumes the messages
+but whether its bad data(different datatype) also it produces and consumer consumes messages means if we expect integer format but produced string format still it will consumed by consumer
+
+to maintain specific data format we use shcema registry
+
+without schema registry:
+source--->producer--->topicA-kafka broker-topicB--->consumer--->target
+
+with schema registry:
+
+
+(register schema for the very first time)
+             ------------------------------------------------------------>schema registry--------------------------------
+             |                ------------------------------------------------|    |----------------------- |            |
+             |                |(schemaID)                                                                   |            |
+          |-------------------|-------------------------|                                            |------|-----------|---------|
+source--->|producer           |                         |                                            |     consumer     |         |
+          |schema(id + data)<-|                         |------------->topicA-kafka broker-topicB--->|                <-|         |--------------------->target
+          |avro serializer(it will                      |                                            |     schema(id+data)        |
+          |serialize the data and also                  |                                            |     avro deserailizer      |    
+          |checks the schema, if its expecting int      |                                            |----------------------------|
+          |but coming data is string it will not accept)|                                             local cache for schemas(schemaid:schema)
+          |---------------------------------------------|
+           local cache for schemas(schemaid:schema)                                                    
+
+
+schema registry lies outside of the kafka cluster
+
+-in this scenario,the producer produces the messages and the schema of it, for the first time the schema will be registered in schema registry
+inreturn it gives scheamid of the data.then the data is passed into topic,from topic the consumer will consumes the messages by deserailizing.
+-while consumer consumes the data consumer will check the schemaid in schema registry, if the schema of data whether its data type is int or etc will check.
+if its matched with schema registry then consumer consumes it.if not then it will throw error that expected not this type of data.
+-if its not first time its senind the data to the producer then it will not go to the schema registry again.
+instead it will take it from the local cache for schemas(schemaid:schema)
+-this schema will be used in both producer and consumer
+
+schema evolution:
+updating in the existing schema or inserting new schema or deleting the schema
+when a schema is first created, it gets a unique schema id and a version number
+with time our schemas will evolve we add new changes and if changes are compatible we get a new schema id and our version number increments within existing schema subject.
+1)forward compatibility:
+update producer to v2 version of the schema and gradually update consumers to the v2 version.
+producer writing with v2(new schema)------------->consumer reading with v1(old schema)
+2)backward compatibility:
+update all consumers to the v2 version of the schema and then update producer to v2 version.
+producer writing with v1(old schema)------------->consumer reading with v2(new schema)
+
+
+--------------------------------------------------------------------------------------------------------------------------------------------------------
+"KAFKA CONNECT"
+
+-from producer the data is reading from different sources like text file
+-then producer produces the data to kafka
+-from kafka the data will be further consumed by different consumers like postgress sql,snowflake,elastic search
+-if we are not sure working with postgress or elastic search then there comes to picture of kafka connect
+-if we use kafka connect we can pull the data from different sources and consumed by different consumer
+
+workflow:
+source system--->kafka connect source----------------->kafka------>kafka connect sink--------------->target system
+                 (read & ingest into kafka cluster)                (write from kafka to non-kafka)
+
+connector:
+connector in kafka connect is a job that manages and coordinates the tasks.
+it decides how to split the data-copying work between the tasks.
+
+task:
+its a piece of work that provides service to accomplish actual job.
+
+connector divide the actual job into smaller pieces as tasks in order to have parallelism and scalable data copying with very little configuration.
+job means read & ingest into kafka cluster or write from kafka to non-kafka
+
+worker:
+is the node that is running the connector and its tasks
+
+-reading data from mysql table and storing in the kafka topic:
+1)in ubuntu:
+docker container exec -it mysql-db mysql -p
+mysql:
+create database(first_db);
+use first_db;
+select database(); --> it will show the currently used database
+create table(employee) with schema and insert values to it -->https://www.kaggle.com/datasets/sprabhagaran/employee
+
+2)in pycharm
+starting the zookeeper: zookeeper-server-start zookeeper.properties
+starting the server(broker): kafka-server-start server.properties
+creating the topic: kafka-topics --create --topic employee --bootstrap-server localhost:9092 --replication-factor 1 partitions 1 
+
+3)in cmd:
+install the two packages: pip install mysql-connector-python, pip install kafka-python
+once done get into python shell
+run each line by line from the link https://github.com/sprabhagaran/Development/blob/master/mysql-kafka.py
+
+4)in another cmd:
+start the consumer-> u can able to see the messages which are stored in mysql table employee
+starting the consumer: kafka-console-consumer --topic employee --from-beginning --bootstrap-server localhost:9092
+
+-reading data from kafka topic and storing in the mysql table:
+1)in pycharm
+starting the zookeeper: zookeeper-server-start zookeeper.properties
+starting the server(broker): kafka-server-start server.properties
+creating the topic: kafka-topics --create --topic kafkaTopic --bootstrap-server localhost:9092 --replication-factor 1 partitions 1 
+
+starting the first producer: kafka-console-producer --topic kafkaTopic --bootstrap-server localhost:9092
+
+2)in ubuntu:
+docker container exec -it mysql-db mysql -p
+mysql:
+create database(first_db);
+use first_db;
+select database(); --> it will show the currently used database
+create table(kafkaTopic) with schema batchid int(primary key auto increment),deptname varchar,salary int
+
+3)run python code in pycharm: from-kafka-to-mysql.py
+give inputs:
+maths,3000
+sci,200
+
+the given inputs are stored in mysql table
+
+
+
+--------------------------------------------------------------------------------------------------------------------------------------------------------
+"KAFKA REBALANCER LISTENER & IMPLEMENTING A DATABASE SINK FOR KAFKA"
+
+source-->producer-->kafka cluster--->consumer--->database
+                        |<---------------|
+                         offset commiting
+
+producer producer the data,consumer consumes the data and commits the offset in kafka cluster and stored the data in database
+if after consumer consumes the data and the next second its down then commiting the offset will not happen,this may lead to duplicate data
+
+instead we will commit the offset in database as below:
+
+source-->producer-->kafka cluster--->database
+
+
+starting the zookeeper: zookeeper-server-start zookeeper.properties
+starting the server(broker): kafka-server-start server.properties
+
+creating the topic: kafka-topics --create --topic hello_world --bootstrap-server localhost:9092 --replication-factor 1 partitions 2
+
+
+producer:producer-balencer.py
+consumer1:consumer-rebalancer1.py
+
+the 2 partitions are assigned to consumer1 and starts reading data
+
+after a while if we start the consumer2
+consumer2:consumer-rebalancer2.py
+one of the partition is assigned to consumer2
+so each partition is assigned to each consumer
+
+if one of the consumer is down also rebalnce occurs and consumer which is up will be taken care of 2 partitions
+
+
+--------------------------------------------------------------------------------------------------------------------------------------------------------
+"ERROR HANDLING IN KAFKA PRODUCER IN-DEPTH INTUITION"
+                                                                      +acks,
+                                                                      +max_in_flight_requests_per_connection,
+                                                                      +enable_idempotence
+start-->key serializer -->partition calcultation-->batching records-->sending records---------------------------->duplicates
+        value serializer                                                |                                              |no
+                                                                        |                               persistent leader and replicas
+                                                                        |                                              |
+                                                                        |     no                 yes    +reties  no    |
+                                                                        |<----------- timeout<----------retry<-------success
+                                                                                         yes |          no |         |yes
+                              <----error handler<-----------------------------------------------------------         |
+                             |                                                                                       |
+stop<------------------------------success handler<------------------------------------------------------------------|
+
+
+if the producer is down and then it will try to retry the data to send and checks the timeout or not
+if its yes it will show error message in console that issue with producer
+in that case the messages are lost
+
+architecture:
+1)   
+                                                    kafka cluster
+client--->api----->kafka producer----x------------->topic
+                    |        |      exception
+                    |        |               
+          kafkaconsumer      |----------------------retry-topic
+                |                                        |
+                |<---------------------------------------|
+
+the producer sends the data to retry-topic which are failed to prodcue into actual topic
+then from retry topic the kafka consumer consumes the data
+so retry-topic lies in kafka cluster, if kafka cluster is down then there will no retry topic also
+
+2)
+                                                   kafka cluster
+client--->api----->kafka producer----x------------->topic
+                    |        |      exception
+                    |        |               
+          job scheduler      |--------database
+                |                         |
+                |<------------------------|
+
+the producer sends the data to database which are failed to prodcue into actual topic
+then from database the data is consumed by job scheduler(py,java) and produce to kafka producer.
+so database doesnt lies in kafka cluster, if kafka cluster is down then there will no issue.
+
+
+
+--------------------------------------------------------------------------------------------------------------------------------------------------------
+"CONFLUENT REST PROXY FOR KAFKA IN DEPTH INTUITION"
+
+non-java-producers--->kafka-cluster--->consumer
+instead of using simple producer to produce messages we use postman to send messages and consumer consumes it
+in ubuntu:
+start CONFLUENT:
+confluent local services start
+in that we can able to see kafka rest which is running on 8082
+start the consumer:kafka-console-consumer --topic hello_world --from-beginning --bootstrap-server localhost:9092
+
+in postman:
+post: http://localhost:8082/topics/hello_world
+body: raw and json
+{"records":[{"value":{"hey":"first"}}]}
+headers:
+add last one more
+Content-Type:application/vnd.kafka.json.v2+json
+
+click on send to post the data
+we can able to see in ubuntu consumer the message
+
+so we can send the link(http://localhost:8082/topics/hello_world) to client to send messages from whever ever they want to consumer
+
+
+--------------------------------------------------------------------------------------------------------------------------------------------------------
+"DEAD LETTER QUEUE or DEAD LETTER TOPIC"
+
+
+to handle errors if the format is not correct we store the data in dead letter queue or dead letter topic
+we can use dead letter topics data for further reference or for analysis
+
+SCRIPT1:
+
+starting the zookeeper: zookeeper-server-start zookeeper.properties
+starting the server(broker): kafka-server-start server.properties
+
+creating the topic: kafka-topics --create --topic demo --bootstrap-server localhost:9092 --replication-factor 1 partitions 1
+creating the topic: kafka-topics --create --topic dlq_topic --bootstrap-server localhost:9092 --replication-factor 1 partitions 1
+
+running the python code: test_dlq.py
+start the consumer by: 
+D:\kafka\bin\windows\kafka-console-consumer --topic demo --from-beginning --bootstrap-server localhost:9092
+D:\kafka\bin\windows\kafka-console-consumer --topic dlq_topic --from-beginning --bootstrap-server localhost:9092
+
+here in this code if the format is not in json then that data will be sent to dlq_topic and demo topic
+if the format is json then that data will be sent to only demo topic
+
+
+SCRIPT2:
+
+starting the zookeeper: zookeeper-server-start zookeeper.properties
+starting the server(broker): kafka-server-start server.properties
+
+creating the topic: kafka-topics --create --topic demo --bootstrap-server localhost:9092 --replication-factor 1 partitions 1
+creating the topic: kafka-topics --create --topic dlq_topic --bootstrap-server localhost:9092 --replication-factor 1 partitions 1
+
+running the python code: test_1.py
+start the consumer by: 
+D:\kafka\bin\windows\kafka-console-consumer --topic demo --from-beginning --bootstrap-server localhost:9092
+D:\kafka\bin\windows\kafka-console-consumer --topic dlq_topic --from-beginning --bootstrap-server localhost:9092
+
+here in this code if the format is not in json then that data will be sent only to dlq_topic
+if the format is json then that data will be sent to only demo topic
+
+
+
+--------------------------------------------------------------------------------------------------------------------------------------------------------
+"DATA STREAMING USING FAUST"
+
+
+starting the zookeeper: zookeeper-server-start zookeeper.properties
+starting the server(broker): kafka-server-start server.properties
+
+creating the topic: kafka-topics --create --topic hello_world --bootstrap-server localhost:9092 --replication-factor 1 partitions 1
+run the python script(proj.py): faust -A proj worker -l info
+start the producer: D:\kafka\bin\windows\kafka-console-producer --topic hello_world --bootstrap-server localhost:9092
+>this is the first message
+>second one
+>third one
+>fourth one
+
+the above messages are stored in logs
+after this stop the script and again try to produce the messages in producer
+>5th one
+>6th one
+>7th
+>8th
+the same messages
+now again start the script using same command (proj.py): faust -A proj worker -l info
+
+we can able to see the messages in terminal of script 
+
+
+
+--------------------------------------------------------------------------------------------------------------------------------------------------------
+"DATA STREAMING USING FAUST WITH COMPLEX DATA TYPES"
+
+source-->input kafka topic--->faust---->output kafka topic
+
+starting the zookeeper: zookeeper-server-start zookeeper.properties
+starting the server(broker): kafka-server-start server.properties
+
+creating the first topic: kafka-topics --create --topic hello_world --bootstrap-server localhost:9092 --replication-factor 1 partitions 1
+creating the second topic: kafka-topics --create --topic send_greetings --bootstrap-server localhost:9092 --replication-factor 1 partitions 1
+
+run the python script(complex.py): faust -A complex worker -l info
+
+start the consumer: D:\kafka\bin\windows\kafka-console-consumer --topic send_greetings --bootstrap-server localhost:9092
+start the producer: D:\kafka\bin\windows\kafka-console-producer --topic hello_world --bootstrap-server localhost:9092
+>{"from_name":"ABC","to_name":"DEF"}
+>{"from_name":"123","to_name":"456"}
+>{"from_name":"sush","to_name":"dolly"}
+
+the above messages are stored in logs
+after this stop the script and again try to produce the messages in producer
+>{"from_name":"1","to_name":"2"}
+>{"from_name":"3","to_name":"4"}
+the same messages
+now again start the script using same command (complex.py): faust -A complex worker -l info
+
+we can able to see the messages in terminal of script and in consumer
+
+
+
+
+
+--------------------------------------------------------------------------------------------------------------------------------------------------------
+"UNDERSTNDING THAT KAFKA TOPIC PARTITIONS STILL DRIVE PARALLELISM IN FAUST"
+
+source-->kafka topic-->faust
+here faust acts like consumer, so we have seen earlier that there are if there are 2 partitions then we can extend consumer to 2
+
+
+starting the zookeeper: zookeeper-server-start zookeeper.properties
+starting the server(broker): kafka-server-start server.properties
+
+creating the topic: kafka-topics --create --topic hello_world --bootstrap-server localhost:9092 --replication-factor 1 partitions 2
+
+run the python script(parallelism_consumer.py): faust -A parallelism_consumer worker -l info
+run the python script(parallelism_producer.py): python3 parallelism_producer.py or rightclick and run
+
+we can able to see the messages the producer are sending are showing in consumer faust
+we can increse the no of consumer 
+run the same python script(parallelism_consumer.py): faust -A parallelism_consumer worker -l info --web-port=6067
+
+due to increse in consumer, we can see odd numbers data went to one of the consumer and even numbers data go to different consumer
+if we stop first consumer, the other consumer consumes all the messages
+if we again up and run the first consumer...same follows that odd numbers data went to one of the consumer and even numbers data go to different consumer
+
+
+--------------------------------------------------------------------------------------------------------------------------------------------------------
+"STORING THE DATA FROM FAUST INTO MYSQL TABLE"
+
+
+starting the zookeeper: zookeeper-server-start zookeeper.properties
+starting the server(broker): kafka-server-start server.properties
+
+creating the topic: kafka-topics --create --topic hello_world --bootstrap-server localhost:9092 --replication-factor 1 partitions 1
+creating the topic: kafka-topics --create --topic kafkaTopic --bootstrap-server localhost:9092 --replication-factor 1 partitions 1
+
+1)
+run the script:faust -A streamsqlproducer worker -l info
+
+
+start the consumer: D:\kafka\bin\windows\kafka-console-consumer --topic kafkaTopic --bootstrap-server localhost:9092
+start the producer: D:\kafka\bin\windows\kafka-console-producer --topic hello_world --bootstrap-server localhost:9092
+>{"subject":"telugu","marks":25}
+>{"subject":"telugu","marks":25}
+>{"subject":"hindi","marks":30}
+>{"subject":"english","marks":40}
+>{"subject":"science","marks":50}
+
+then the consumer consumes the data
+
+
+2)in ubuntu:
+docker container exec -it mysql-db mysql -p
+mysql:
+create database(first_db);
+use first_db;
+select database(); --> it will show the currently used database
+create table(kafkaTopic) with schema batchid int(primary key auto increment),subject varchar,marks int
+
+run the script:topic-sql.py
+this script will store the messages from kafkaTopic topic to kafkaTopic table
+
+
+--------------------------------------------------------------------------------------------------------------------------------------------------------
+"WORKING WITH TABLES IN FAUST"
+
+1 example)
+
+starting the zookeeper: zookeeper-server-start zookeeper.properties
+starting the server(broker): kafka-server-start server.properties
+
+creating the topic: kafka-topics --create --topic hello_world --bootstrap-server localhost:9092 --replication-factor 1 partitions 1
+run the script streamtable.py: faust -A streamtable worker -l info
+
+
+start the producer: D:\kafka\bin\windows\kafka-console-producer --topic hello_world --bootstrap-server localhost:9092
+>{"name":"sush","age":45}
+>{"name":"a","age":20}
+>{"name":"b","age":30}
+>{"name":"b","age":30}
+
+the script streamtable.py will store the data in hello_world topic which age is greater than 30
+
+
+2 example)
+
+starting the zookeeper: zookeeper-server-start zookeeper.properties
+starting the server(broker): kafka-server-start server.properties
+
+creating the topic: kafka-topics --create --topic hello_world1 --bootstrap-server localhost:9092 --replication-factor 1 partitions 1
+run the script streamcount.py: faust -A streamcount worker -l info
+
+
+start the producer: D:\kafka\bin\windows\kafka-console-producer --topic hello_world1 --bootstrap-server localhost:9092
+>hello world
+>hello kafka
+>kafka is very popular hello world
+>hi world
+>hi there
+
+the script streamcount.py will store the data in hello_world1 topic data count
+┌Count Tabled─────┐
+│ Key     │ Value │
+├─────────┼───────┤
+│ hello   │ 3     │
+│ world   │ 3     │
+│ kafka   │ 2     │
+│ is      │ 1     │
+│ very    │ 1     │
+│ popular │ 1     │
+│ hi      │ 2     │
+│ there   │ 1     │
+└─────────┴───────┘
+
+
+
+--------------------------------------------------------------------------------------------------------------------------------------------------------
+"CO-PARTITIONING KAFKA-TABLES IN FAUST APPLICATION"
+
+1 example)
+
+starting the zookeeper: zookeeper-server-start zookeeper.properties
+starting the server(broker): kafka-server-start server.properties
+
+creating the topic: kafka-topics --create --topic hello_world --bootstrap-server localhost:9092 --replication-factor 1 partitions 2
+
+start the consumer1: faust -A consumerstreamcountwithmorepartitions worker -l info
+start the consumer2: faust -A consumerstreamcountwithmorepartitions worker -l info --web-port 6067
+start the producer: producerstreamcountwithmorepartitions.py
+
+we can see that 
+the script consumerstreamcountwithmorepartitions will store the data in such a way that
+first_consumer:
+┌Count Tabled────┐
+│ Key    │ Value │
+├────────┼───────┤
+│ Nepal  │ 3     │
+│ India  │ 2     │
+│ Bhutan │ 1     │
+└────────┴───────┘
+second_consumer:
+┌Count Tabled────┐
+│ Key    │ Value │
+├────────┼───────┤
+│ USA    │ 2     │
+│ Bhutan │ 2     │
+└────────┴───────┘
+but actual ans was:
+usa-2
+nepal-3
+bhutan-3
+india-2
+so bhutan is read by 2 partitions so first partition takes 2 data and other partition 1 data
+
+for this issue we can use below method:
+
+2)
+starting the zookeeper: zookeeper-server-start zookeeper.properties
+starting the server(broker): kafka-server-start server.properties
+
+creating the topic: kafka-topics --create --topic hello_world1 --bootstrap-server localhost:9092 --replication-factor 1 partitions 2
+
+start the consumer1: faust -A secondconsumer worker -l info
+start the consumer2: faust -A secondconsumer -l info --web-port 6067
+start the producer: secondproducer.py
+
+we can see that 
+the script secondconsumer will store the data in such a way that
+first_consumer:
+┌Count Tabled────┐
+│ Key    │ Value │
+├────────┼───────┤
+│ Bhutan │ 3     │
+└────────┴───────┘
+
+second_consumer:
+┌Count Tabled───┐
+│ Key   │ Value │
+├───────┼───────┤
+│ India │ 3     │
+│ Nepal │ 4     │
+└───────┴───────┘
+so consumer reads data by country
+
+
+--------------------------------------------------------------------------------------------------------------------------------------------------------
+"WINDOWING IN KAFKA STREAMS USING FAUST FRAMEWORK IN PYTHON | TUMBLING WINDOW"
+
+example 1)
+
+time          9:00    9:01     9:02      9:03        9:04    9:05      9:06  
+                |       |       |         |           |       |         |
+data stream     | 5,3,8 | 9,2,8 |  5,7,1  |  5,3,2,6  |  5,3  |  1,8,9  |
+total =            16       19       13         16        8        18
+
+
+
+example 2)
+
+time          9:00    9:01     9:02      9:03        9:04    9:05      9:06  
+                |       |       |         |           |       |         |
+data stream     | 5,3,8 | 9,2,8 |  5,7,1  |  5,3,2,6  |  5,3  |  1,8,9  |
+total=           5,8,16  9,11,19  5,12,13   5,8,10,16    5,8     1,9,18
+
+TUMBLING window means the total time spent in 1 min or particular time period
+
+
+starting the zookeeper: zookeeper-server-start zookeeper.properties
+starting the server(broker): kafka-server-start server.properties
+
+creating the topic: kafka-topics --create --topic car_speed --bootstrap-server localhost:9092 --replication-factor 1 partitions 1
+start the consumer(tumblingconsumer.py): faust -A tumblingconsumer worker -l info
+start the producer(tumblingwindow.py): run the script tumblingwindow.py
+
+the output in consumer terminal shows the total speed as example2
+
+
+
+
+
+--------------------------------------------------------------------------------------------------------------------------------------------------------
+"OUT OF ORDER / LATE ARRIVING DATA EVENTS HANDLING IN FAUST APPLICATION"
+
+
+time          9:00    9:01     9:02      9:03        9:04    9:05      9:06  
+                |       |       |         |           |       |         |
+data stream     | 5,3,8 | 9,2,8 |  5,7,1  |  5,3,2,6  |  5,3  |  1,8,9  |
+total=           5,8,16  9,11,19  5,12,13   5,8,10,16    5,8     1,9,18
+
+after this inteval 9:06 we got the data from producer which should be sent in between 9:01 to 9:02
+but due to producer is down got delay in data 
+so in order to store the data in same interval...we should use memory to save every data of time and data stream
+so if its delayed also we can store the delayed data in exact timestamp list
+
+
+
+
+--------------------------------------------------------------------------------------------------------------------------------------------------------
+"HOW TO CHOOSE THE NO.OF PARTITIONS FOR A KAFKA TOPIC? HORIZONTAL SCALING FOR KAFKA CONSUMER"        
+
+1 case)       1000/sec
+producer--->kafka cluster--->consumer1        consumer2        
+                             100 msgs/sec     100 msgs/sec
+        
+        1000/100 =10 partitions required
+        but for safety purpose we add 2 more partitions that is 10+2=12 partitions
+
+2 case)
+            30k/sec
+producer--->kafka cluster--->consumer1 
+                             10 million/sec
+
+one single consumer is more than sufficient to process the 30k partitions because it has the capability of processing 10 million/sec so one partitions is more than enough
+
+but single broker using to handle the load is not a good idea, atleast we should have 3 brokers
+so each broker will handle the load 
+
+3 case)
+
+            1lak/sec
+producer--->kafka cluster--->consumer1 
+                             100/sec
+        100000/100=1000 consumers
+        so 1000 consumers is not a good idea because consumer should read data in leader and following replics,so this may lead lag 
+        so based on that we should increase the partition to handle that by increasing the partitions
+
+
+starting the zookeeper: zookeeper-server-start zookeeper.properties
+starting the server(broker): kafka-server-start server.properties
+
+creating the topic: kafka-topics --create --topic noofpartition --bootstrap-server localhost:9092 --replication-factor 1 partitions 1
+
+start the consumer1: one_consumernoofpartitions.py
+start the consumer2: two_consumernoofpartitions.py
+start the producer: producernoofpartitions.py
+
+at first due to single partition, only one of the consumer will be revoked and assigned
+to handle the load we can increase the partition
+increase the partition for existing topic : D:\kafka\bin\windows\kafka-topics --bootstrap-server localhost:9092 --alter --topic noofpartition --partitions 2
+
+so now both the consumers in same consumer group will handle the load
