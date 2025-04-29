@@ -1,0 +1,33 @@
+WHY AIRFLOW:
+- set the order of the tasks
+- make sure each tasks are done when the previous task are done
+- control the timing of the entire data process
+
+WHAT IS AIRFLOW:
+- airflow is a pen source platform to author,scedule and monitor workflows
+benefits
+1)flexibility:python based,dynamic tasks,dynamic workflows,branching(execute diff set of tasks based on condition)
+2)scalability
+3)fully functional user interface
+4)extensibility
+
+CORE COMPONENTS:
+1)web-server:(dashboard for car check speed,fuel etc)
+web server provides the user interface you see when you use airflow
+view,monitor,manage workflows through web browser
+2)scheduler:(alarm clock where the clock wakesup exact time everyday we set)
+it determines when the tasks should run
+it ensures tasks run in correct order
+3)the meta database:(airflows memory, it has tasks have run,when they ran and their results)
+stores the information of tasks and status
+it keeps all the important details of workflows
+4)triggerer:(important email before starting the task- airflow will notify once the email received we can focus on other meantime)
+it manages the deferable tasks- tasks that wait for external events
+without blocking by other process it will handle tasks
+5)executor:(traffic controller, decides which car should go first to reduce traffic to optimize performance)
+it determines how the tasks will be run
+whether the tasks run parallel or in sequence
+6)queue:(line at coffee shop)
+list of tasks waiting to be executed
+7)worker:(airflow- restaurent, the workers are chefs take order from queue and execute them)
+performs the tasks
