@@ -438,6 +438,51 @@ ack=0, after consuming the message from broker, consumer will not provide any ac
 ack=1, after consuming the message from broker, consumer will provide acknowledgement to broker that recieved data
 ack=all, after consuming the message from broker, consumer will provide acknowledgement to broker when all the leaders and in-sync replicas recieved the data(this have latency becoz all the leaders and in-sync replicas needs to get data and very safety)
 
+#The acknowledgement parameter (acks) in Kafka is a crucial setting that determines how many partition 
+replicas must confirm receipt of a message before the producer considers the write operation successful. 
+When the producer writes data to a Kafka topic, that data may be replicated across multiple brokers (or nodes) to ensure fault tolerance. 
+The acks setting controls how many of those replicas must successfully receive the message before an acknowledgment is sent back to the producer. 
+This setting plays a significant role in determining message reliability—how likely it is that a message could be lost in case of a failure.
+
+Let’s consider the scenario where the acknowledgement parameter is set to zero. 
+In this case, the producer will not wait for any acknowledgment from the broker before assuming that the message has been successfully written. 
+The producer sends the message, and if there are network issues or the message fails to be written to the Kafka cluster, 
+the producer won’t be aware of it—it simply “fires and forgets.” While this might seem efficient, it is a risky approach, as the producer won't be 
+notified if something goes wrong. If the broker goes offline, encounters an error, or fails to receive the message for any reason, the producer won’t know, 
+and the message may be lost without any chance of recovery.
+
+Another option for the acknowledgement parameter is ack=1. With this setting, 
+the producer will receive a success response as soon as the leader partition receives the message. 
+Once the leader partition accepts the message, it sends an acknowledgment back to the producer, confirming that the message was successfully written. 
+After receiving this acknowledgment, the producer can proceed with other tasks or continue writing additional messages. 
+However, if the message cannot be written to the leader partition—for instance, if the leader is overwhelmed or a new leader needs to be elected—the producer 
+will receive an error response. This allows the producer to understand that something went wrong and retry sending the message, 
+thus reducing the risk of data loss compared to ack=0, where the producer has no feedback.
+
+In the ack=1 configuration, the producer sends the data to the leader partition of the topic. 
+Once the leader receives and writes the message, it sends an acknowledgment back to the producer, confirming the message was 
+successfully written. However, a potential issue arises if replication is enabled for the topic. 
+In this case, the producer only receives an acknowledgment from the leader partition, not from the in-sync replicas (ISRs) on other brokers. 
+This means the producer does not know whether the message has been properly replicated to other partitions across different servers. 
+Since the producer doesn't wait for acknowledgments from these replicas, it cannot guarantee that the message has been safely replicated across all partitions, 
+which could be a disadvantage of using ack=1 for data consistency.
+
+The last option for the acknowledgement parameter is ack=all (or ack=-1). With this setting, the producer will only receive a success 
+response once the message is successfully written not just to the leader partition, but also to all the in-sync replicas (ISRs). 
+In this configuration, the producer sends the data to the leader partition, and the leader writes the message. Then, 
+the leader forwards the message to all the in-sync replicas. These replicas write the data and send acknowledgments back to the leader. 
+Once the leader collects acknowledgments from all the ISRs, it sends a final acknowledgment to the producer, confirming that the message has been 
+safely written across all replicas. This provides the highest level of data consistency and reliability but can introduce more latency due to 
+waiting for acknowledgments from multiple replicas.
+
+Once the producer receives the acknowledgment that the message has been successfully written and 
+replicated across all partitions, it proceeds with producing the next message. This is the core concept behind ack=all. 
+As you can see, this approach significantly reduces the chance of message loss, providing a high level of safety and reliability. However, 
+the trade-off is increased latency. The producer must wait for the message to be replicated not only to the leader but also to all in-sync replicas before 
+receiving the final acknowledgment. This added latency can slow down the process, but it ensures greater data safety and consistency. In this configuration, 
+both the leader and the replicas must acknowledge the message before the producer can move on.
+
+
 --------------------------------------------------------------------------------------------------------------------------------------------------------
 "KAFKA TOPIC PARTITIONS AND PRODUCERS USING PYTHON"
 with_partition.py file
