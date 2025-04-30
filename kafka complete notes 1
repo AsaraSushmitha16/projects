@@ -389,6 +389,31 @@ when we see the logs in specific partition there will be no.of files of txt whic
 
 --------------------------------------------------------------------------------------------------------------------------------------------------------
 "KAFKA PRODUCER KEY AND MESSAGE ACKNOWLEDGEMENTS"
+#In a Kafka cluster, a topic can have multiple partitions, and when a producer sends messages to that topic, a key question arises: 
+how are those messages distributed across the different partitions? Specifically, 
+how does Kafka decide whether a message should go to Partition 0, Partition 1, or any other available partition? 
+This distribution is handled using message keys. When a producer sends a message, it can optionally include a key along with the value. 
+This key can be anything—like a string, a number, or any identifier. If no key is provided, Kafka treats the key as null. 
+When a key is included, Kafka uses a hashing algorithm to determine which partition the message should go to. 
+The key is passed as input to the hash function, and the output of that function decides the partition where the message will be stored. 
+The output of the hash function always maps to one of the available partitions. 
+For example, imagine a simple hashing strategy where the key is divided by 3, and the remainder determines the partition number. 
+So, if a message has a key of 7, dividing it by 3 gives a remainder of 1, meaning Kafka would route that message to Partition 1. Similarly, 
+if the key is 5, the remainder is 2, so the message would be sent to Partition 2. This ensures that messages with the same key always go to the same partition, 
+maintaining order for that key. However, if the message key is set to null, Kafka uses a round-robin approach for partitioning. 
+In this case, Kafka will send the first message to Partition 0, the second to Partition 1, the third to Partition 2, and so on, continuing in a circular fashion. 
+This round-robin approach ensures that messages are evenly distributed across all partitions when no key is provided. 
+If a key is included, Kafka applies the hashing algorithm to determine which partition the message will go to. 
+An important point to note is that if multiple messages share the same key, they will always be routed to the same partition. 
+For example, if several messages have the key "7" and the hashing strategy is to divide by 3 (and use the remainder), 
+the result will always be the same—1. So, all messages with the key "7" will consistently be directed to Partition 1. 
+This concept is widely used in partitioning, especially in large-scale systems, and should be familiar if you’ve worked with similar distributed systems. 
+To summarize, messages are distributed across partitions based on their keys. If you're experimenting with this, 
+you need to send key-value pairs instead of just values to demonstrate partitioning. Two important producer configurations 
+to keep in mind are the sparse.key property, which should be set to true if you want to make the key mandatory, and the key separator, 
+which defines how the key and value are separated (e.g., using a colon). When sending messages with key-value pairs, 
+these settings ensure that Kafka correctly handles the distribution and separation of data.
+
 
 if key=0, the messages are stored in the roundrobin way
 if key=1, the messages are sent to the specific partition
