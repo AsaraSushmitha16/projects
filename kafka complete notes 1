@@ -547,6 +547,27 @@ so we use fluch() and close() to consume the all records
 
 
 --------------------------------------------------------------------------------------------------------------------------------------------------------
+"PRODUCER RETRIES & IDEMPOTENT PRODUCER IN KAFKA"
+In Kafka, when idempotence is enabled, the producer ensures that duplicate messages are not written to the Kafka cluster in case of failures during the write operation. 
+If a batch fails to be acknowledged, Kafka does not resend it, but instead sends an acknowledgement to the producer, ensuring that the batch is only written once. 
+This prevents duplicacy and guarantees that each message is written exactly once. However, a potential problem arises when the producer is sending multiple batches to a single partition. 
+If the first batch is successfully written, but the second batch fails due to a network or server issue, Kafka retries sending the second batch. 
+Meanwhile, the third batch might be successfully written, causing a disruption in the order of messages within the partition. 
+This could result in a sequence like "first batch, third batch, second batch," which violates the expected ordering.
+
+To solve this issue, Kafka provides the max.in.flight.requests.per.connection configuration. 
+This parameter controls how many requests Kafka can send before receiving an acknowledgment for the previous ones. 
+If set to a higher value (e.g., 5), Kafka will send multiple batches simultaneously, potentially causing the message order to be disrupted during retries. 
+However, if you set max.in.flight.requests.per.connection to 1, Kafka will only send one request at a time and wait for the acknowledgment before sending the next batch. 
+This ensures that even during retries, Kafka will not send any new batches until the current batch has been fully processed, thus preserving the order of messages within a partition.
+
+By enabling this setting, you're effectively making the producer's message writing operation synchronous. 
+This means that Kafka will wait for the acknowledgment of the first batch before sending the second, thereby preventing potential message order issues that arise from retry attempts. 
+While setting max.in.flight.requests.per.connection to 1 can slow down the writing process due to the enforced waiting period, it ensures that message order is strictly maintained, 
+which is essential in scenarios where message sequencing is critical. 
+Therefore, enabling idempotence and configuring the max.in.flight.requests.per.connection parameter to 1 provides the trade-off between safety and performance, ensuring data integrity and ordered delivery.
+
+--------------------------------------------------------------------------------------------------------------------------------------------------------
 "IN-DEPTH INTUITION ON DIFFERENT WAYS TO SEND MESSAGES TO KAFKA TOPIC USING PYTHON"
 
 1)FIRE AND FORGET:
