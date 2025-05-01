@@ -570,6 +570,45 @@ Therefore, enabling idempotence and configuring the max.in.flight.requests.per.c
 --------------------------------------------------------------------------------------------------------------------------------------------------------
 "IN-DEPTH INTUITION ON DIFFERENT WAYS TO SEND MESSAGES TO KAFKA TOPIC USING PYTHON"
 
+#1. Fire-and-Forget
+Definition:
+In fire-and-forget, the Kafka producer sends a message to the broker without waiting for any acknowledgment.
+The producer assumes the message is delivered successfully and moves on.
+Pros:
+Fastest method (lowest latency).
+No blocking or waiting.
+Cons:
+No guarantee the message was received.
+If the broker is down or there’s a network issue, the message is lost.
+Not reliable – useful only when occasional message loss is acceptable (e.g., logging or metrics).
+2. Synchronous Send
+Definition:
+The producer sends the message and waits (blocks) until it gets an acknowledgment from the broker.
+This is done using .get() on the Future returned by send().
+Pros:
+Reliable – the producer knows whether the message was successfully written.
+Good for critical data where loss is not acceptable.
+Cons:
+Slower – producer is blocked until broker responds.
+Not suitable for high-throughput, low-latency systems.
+3. Asynchronous Send
+Definition:
+The producer sends the message and attaches a callback to handle the response (success or failure).
+It doesn’t block the main thread and allows sending other messages in the meantime.
+Pros:
+Efficient and non-blocking.
+Allows error handling with retries, logs, alerts, etc.
+Ideal for high-throughput systems.
+Cons:
+More complex logic due to callbacks.
+Messages are handled out of order, so tracking sequence requires extra care.
+
+Kafka Acknowledgment Levels (acks config)
+This affects all three modes:
+acks=0 → Fire-and-forget behavior
+acks=1 → Leader broker only needs to ack (risk of data loss if leader fails after ack)
+acks=all → All replicas must ack (strongest durability)
+
 1)FIRE AND FORGET:
 starting the zookeeper: zookeeper-server-start zookeeper.properties
 starting the server(broker): kafka-server-start server.properties
