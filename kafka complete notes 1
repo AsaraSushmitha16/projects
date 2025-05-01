@@ -655,7 +655,37 @@ start the consumer:>D:\kafka\bin\windows\kafka-console-consumer --topic hello_wo
 run the python code: different_ways
 the producer shows the messages that are sent, now if broker go down then consumer shows error in console and producer also shows error in console that from where it got failed to send messages
 
+--------------------------------------------------------------------------------------------------------------------------------------------------------
+"STRATEGIES FOR KAFKA TOPIC PARTITIONING WHEN KEY=NULL"
+#How Kafka Distributes Messages with a Null Key — Round-Robin vs. Sticky Partitioning
+When a Kafka producer sends messages without a key (i.e., the message key is null), Kafka needs to decide how to distribute these messages across multiple partitions of a topic. Let's first understand the simplest approach Kafka could use: round-robin partitioning.
 
+Round-Robin Partitioning (Simplest Approach)
+In this method, Kafka distributes each incoming message to the next available partition in a cyclical manner. For example, if a topic has 5 partitions (P0 to P4) and the producer receives six messages (1 to 6), they are distributed like this:
+
+Message 1 → Partition 0
+Message 2 → Partition 1
+Message 3 → Partition 2
+Message 4 → Partition 3
+Message 5 → Partition 4
+Message 6 → back to Partition 0
+
+This continues in a round-robin fashion.
+While this method ensures an even distribution of messages across partitions, it comes with two main drawbacks:
+Performance Overhead: Each message is written to a different partition, which increases CPU usage and latency.
+Broker Load: The broker has to keep switching partitions for each message, adding overhead and reducing efficiency.
+
+To address these inefficiencies, Kafka introduced an optimized method for keyless message distribution called Sticky Partitioning.
+Sticky Partitioning (Optimized Approach)
+In sticky partitioning, Kafka takes advantage of the producer's batching mechanism. Instead of assigning every individual message to a different partition, it groups multiple messages into a batch (controlled by batch.size or linger.ms) and then sends the entire batch to a single partition.
+
+For example:
+Messages 1, 2, 3 form a batch → sent to Partition 0
+Messages 4, 5, 6 form the next batch → sent to Partition 1
+This approach offers two major benefits:
+Lower Latency: Writing a batch of messages to a single partition is faster than sending them to multiple partitions.
+Reduced CPU Usage on Broker: Since all messages in a batch go to the same partition, the broker doesn't need to compute a new partition for each individual message, saving processing effort.
+This behavior is called "sticky" because the producer "sticks" to a single partition for the entire batch duration. Once a batch is sent, the producer may choose a new partition for the next batch.
 
 --------------------------------------------------------------------------------------------------------------------------------------------------------
 "KAFKA CONSUMER GROUPS CLI DEMO | KAFKA-PYTHON"
