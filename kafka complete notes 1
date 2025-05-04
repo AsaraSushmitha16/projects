@@ -950,8 +950,25 @@ PS D:\aa_kafka_python>
 
 --------------------------------------------------------------------------------------------------------------------------------------------------------
 IN-DEPTH INTUTION ON TOPIC LOG COMPACTION
-#Kafka stores messages like a file system — topics are like folders, and messages go into files called segments. When a producer sends data very fast, Kafka stores these messages, even if the consumer is slow to read them. By default, messages are kept for 7 days, even after being read. But if the server (broker) has limited memory and the message rate is too high, it can run out of space and crash. To prevent this, we can reduce how long Kafka keeps messages — for example, from 7 days to 1 or 2 days. This setting can be adjusted while creating the topic or from the server configuration. This helps manage memory better and keeps Kafka running smoothly.
+#Kafka stores messages like a file system — topics are like folders, and messages go into files called segments. 
+When a producer sends data very fast, Kafka stores these messages, even if the consumer is slow to read them. By default, messages are kept for 7 days, 
+even after being read. But if the server (broker) has limited memory and the message rate is too high, it can run out of space and crash.
+To prevent this, we can reduce how long Kafka keeps messages — for example, from 7 days to 1 or 2 days. This setting can be adjusted while 
+creating the topic or from the server configuration. This helps manage memory better and keeps Kafka running smoothly.
 
+in server.properties
+log.retention.hours=168
+log.retention.bytes=16856782496
+log.segment.bytes=16856782496 (where another segment files are created if the file reach this size)
+log.retention.checkinterval.ms=30000000 (checks if they can be deleted according to policies)
+
+In real-time systems using Change Data Capture (CDC), the same record (based on a primary key) can be updated multiple times. For example, initially, a record with primary key 1 might have the name "A". Later, the name gets updated to "B". Both of these changes are sent to a Kafka topic — first 1,A and then 1,B.
+
+Now, suppose you are replicating data from the source system to a target system (like a database or data warehouse). You only want the latest value for each primary key in the target — in this case, only 1,B, not both records.
+
+To achieve this, Kafka offers a feature called log compaction. With log-compacted topics, Kafka automatically removes older messages for the same key and retains only the latest message (1,B here). This is very helpful when you don't need to store the full history of changes — just the current or most recent state.
+
+So, in CDC use cases where only the final state matters, log-compacted topics help save space and keep the data clean and up to date.
 --------------------------------------------------------------------------------------------------------------------------------------------------------
 
 "Schema registry"
