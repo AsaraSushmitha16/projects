@@ -29,6 +29,17 @@ if one of the producer down also, consumer will read msgs from other
 
 --------------------------------------------------------------------------------------------------------------------------------------------------------
 "TOPIC WITH MULTIPLE PARTITIONS"
+#In Apache Kafka, a topic is a stream of data similar to a table in a database, 
+where data produced by producers is stored and later consumed by consumers. Each topic is split into multiple partitions, 
+which enable Kafka to scale horizontally and allow parallel processing. Messages sent to a topic are distributed across these partitions, 
+either randomly or based on a key. Within each partition, messages are assigned a unique, sequential offset, 
+starting from 0 and incrementing with each new message. Offsets are only meaningful within the context 
+of a specific partition and are used by consumers to track message positions. While message ordering is guaranteed within a single partition, 
+there is no ordering guarantee across partitions. Kafka messages are immutable and retained only for a configured period (e.g., 1 week),
+after which they are purged—but their offset values continue to increase. Understanding the role of topics, partitions, and offsets is essential 
+for designing robust Kafka-based systems.
+
+
 
 starting the zookeeper: zookeeper-server-start zookeeper.properties
 starting the server(broker): kafka-server-start server.properties
@@ -82,6 +93,15 @@ The partition is required when offset is specified.
 
 --------------------------------------------------------------------------------------------------------------------------------------------------------
 "KAFKA CLUSTER WITH MULTIPLE BROKERS"
+
+#When a Kafka topic is created with multiple partitions in a multi-server (multi-broker) cluster, 
+Kafka automatically tries to distribute those partitions across different brokers rather than placing them all on a single server.
+The reason is simple: fault tolerance and availability. If all partitions of a topic were located on one server and that server went down, 
+then the entire topic would become inaccessible—producers couldn't publish messages, and consumers couldn't read any data.
+However, if the partitions are spread across multiple servers, then if one broker fails, only the partitions on that server are temporarily unavailable, 
+while the remaining partitions (on other brokers) can still accept new messages and serve consumers. 
+This ensures that part of the topic remains operational even if a broker goes offline, 
+enhancing reliability and scalability in distributed Kafka deployments.
 
 
 starting the zookeeper: zookeeper-server-start zookeeper.properties
@@ -147,7 +167,23 @@ but if we try to run the broker(server0) is up and running again, we can restart
 --------------------------------------------------------------------------------------------------------------------------------------------------------
 "TOPIC WITH REPLICATION IN MULTIPLE BROKERS"
 
+#In Kafka, replication is a critical feature used to ensure high availability and fault tolerance. 
+When you have multiple brokers (servers), Kafka automatically creates replicas of partitions across different brokers. 
+For example, if Partition 0 and Partition 2 are on Broker 1, Kafka may replicate those partitions to Broker 2 or Broker 3. 
+This means that if Broker 1 fails, Kafka can still serve requests using the replica partitions on the other brokers. 
+Both consumers and producers can interact with these replicas through leader election, where one replica becomes the active leader. 
+Replication happens at the partition level, not the individual message level, meaning that entire partitions are copied to other brokers. 
+This replication ensures that even if a broker goes down, the data remains accessible and 
+the system continues functioning without data loss. Kafka manages which broker holds the leader and followers of each partition, 
+making the process seamless and reliable.
 
+#In Kafka, each partition has a leader that handles all read and write requests for that partition. 
+The other replicas of the same partition that stay in sync with the leader are called in-sync replicas (ISR).
+These ISRs reside on different brokers and continuously replicate the data from the leader. 
+If a broker hosting a leader partition goes down, Kafka automatically elects one of the in-sync replicas to become the new leader. 
+This new leader then starts handling all client requests for that partition. 
+This automatic leader failover mechanism ensures high availability and uninterrupted message flow, even if one broker fails, 
+as long as there is at least one in-sync replica available.
 ->
 
 starting the zookeeper: zookeeper-server-start zookeeper.properties
@@ -322,6 +358,19 @@ it will allocate that leaders are 0,2 servers, so if rack1 fails we may not lost
 
 --------------------------------------------------------------------------------------------------------------------------------------------------------
 "KAFKA LOG SEGMENTS IN-DEPTH INTUITION"
+#In Apache Kafka, when producers send messages to a topic, those messages are stored in partitions as append-only log files. 
+Instead of writing all messages into one large file, Kafka splits each partition’s data into smaller files called segments. 
+This makes data management more efficient and allows for faster reads and log cleanup. 
+The size of each segment is configurable—once a segment reaches a certain size, 
+Kafka automatically creates a new one to continue storing incoming messages. 
+Each topic can have multiple partitions, and these partitions are distributed across different brokers (servers) in the 
+Kafka cluster to support parallel processing, scalability, and fault tolerance. For example, 
+a topic called Topic A might have four partitions: Partition 0 to Partition 3. Each of these partitions contains multiple segment files 
+where messages are stored in the order they arrive. Segments are the smallest unit of storage in Kafka. A group of segments forms a partition, 
+a group of partitions forms a topic, and multiple topics are managed within a Kafka cluster. 
+This layered architecture—segments → partitions → topics → cluster—is what enables Kafka to reliably and efficiently handle massive volumes of streaming data in real time.
+
+
 
 topic--->partition--->offset
 
@@ -340,6 +389,31 @@ when we see the logs in specific partition there will be no.of files of txt whic
 
 --------------------------------------------------------------------------------------------------------------------------------------------------------
 "KAFKA PRODUCER KEY AND MESSAGE ACKNOWLEDGEMENTS"
+#In a Kafka cluster, a topic can have multiple partitions, and when a producer sends messages to that topic, a key question arises: 
+how are those messages distributed across the different partitions? Specifically, 
+how does Kafka decide whether a message should go to Partition 0, Partition 1, or any other available partition? 
+This distribution is handled using message keys. When a producer sends a message, it can optionally include a key along with the value. 
+This key can be anything—like a string, a number, or any identifier. If no key is provided, Kafka treats the key as null. 
+When a key is included, Kafka uses a hashing algorithm to determine which partition the message should go to. 
+The key is passed as input to the hash function, and the output of that function decides the partition where the message will be stored. 
+The output of the hash function always maps to one of the available partitions. 
+For example, imagine a simple hashing strategy where the key is divided by 3, and the remainder determines the partition number. 
+So, if a message has a key of 7, dividing it by 3 gives a remainder of 1, meaning Kafka would route that message to Partition 1. Similarly, 
+if the key is 5, the remainder is 2, so the message would be sent to Partition 2. This ensures that messages with the same key always go to the same partition, 
+maintaining order for that key. However, if the message key is set to null, Kafka uses a round-robin approach for partitioning. 
+In this case, Kafka will send the first message to Partition 0, the second to Partition 1, the third to Partition 2, and so on, continuing in a circular fashion. 
+This round-robin approach ensures that messages are evenly distributed across all partitions when no key is provided. 
+If a key is included, Kafka applies the hashing algorithm to determine which partition the message will go to. 
+An important point to note is that if multiple messages share the same key, they will always be routed to the same partition. 
+For example, if several messages have the key "7" and the hashing strategy is to divide by 3 (and use the remainder), 
+the result will always be the same—1. So, all messages with the key "7" will consistently be directed to Partition 1. 
+This concept is widely used in partitioning, especially in large-scale systems, and should be familiar if you’ve worked with similar distributed systems. 
+To summarize, messages are distributed across partitions based on their keys. If you're experimenting with this, 
+you need to send key-value pairs instead of just values to demonstrate partitioning. Two important producer configurations 
+to keep in mind are the sparse.key property, which should be set to true if you want to make the key mandatory, and the key separator, 
+which defines how the key and value are separated (e.g., using a colon). When sending messages with key-value pairs, 
+these settings ensure that Kafka correctly handles the distribution and separation of data.
+
 
 if key=0, the messages are stored in the roundrobin way
 if key=1, the messages are sent to the specific partition
@@ -364,6 +438,82 @@ ack=0, after consuming the message from broker, consumer will not provide any ac
 ack=1, after consuming the message from broker, consumer will provide acknowledgement to broker that recieved data
 ack=all, after consuming the message from broker, consumer will provide acknowledgement to broker when all the leaders and in-sync replicas recieved the data(this have latency becoz all the leaders and in-sync replicas needs to get data and very safety)
 
+#The acknowledgement parameter (acks) in Kafka is a crucial setting that determines how many partition 
+replicas must confirm receipt of a message before the producer considers the write operation successful. 
+When the producer writes data to a Kafka topic, that data may be replicated across multiple brokers (or nodes) to ensure fault tolerance. 
+The acks setting controls how many of those replicas must successfully receive the message before an acknowledgment is sent back to the producer. 
+This setting plays a significant role in determining message reliability—how likely it is that a message could be lost in case of a failure.
+
+Let’s consider the scenario where the acknowledgement parameter is set to zero. 
+In this case, the producer will not wait for any acknowledgment from the broker before assuming that the message has been successfully written. 
+The producer sends the message, and if there are network issues or the message fails to be written to the Kafka cluster, 
+the producer won’t be aware of it—it simply “fires and forgets.” While this might seem efficient, it is a risky approach, as the producer won't be 
+notified if something goes wrong. If the broker goes offline, encounters an error, or fails to receive the message for any reason, the producer won’t know, 
+and the message may be lost without any chance of recovery.
+
+Another option for the acknowledgement parameter is ack=1. With this setting, 
+the producer will receive a success response as soon as the leader partition receives the message. 
+Once the leader partition accepts the message, it sends an acknowledgment back to the producer, confirming that the message was successfully written. 
+After receiving this acknowledgment, the producer can proceed with other tasks or continue writing additional messages. 
+However, if the message cannot be written to the leader partition—for instance, if the leader is overwhelmed or a new leader needs to be elected—the producer 
+will receive an error response. This allows the producer to understand that something went wrong and retry sending the message, 
+thus reducing the risk of data loss compared to ack=0, where the producer has no feedback.
+
+In the ack=1 configuration, the producer sends the data to the leader partition of the topic. 
+Once the leader receives and writes the message, it sends an acknowledgment back to the producer, confirming the message was 
+successfully written. However, a potential issue arises if replication is enabled for the topic. 
+In this case, the producer only receives an acknowledgment from the leader partition, not from the in-sync replicas (ISRs) on other brokers. 
+This means the producer does not know whether the message has been properly replicated to other partitions across different servers. 
+Since the producer doesn't wait for acknowledgments from these replicas, it cannot guarantee that the message has been safely replicated across all partitions, 
+which could be a disadvantage of using ack=1 for data consistency.
+
+The last option for the acknowledgement parameter is ack=all (or ack=-1). With this setting, the producer will only receive a success 
+response once the message is successfully written not just to the leader partition, but also to all the in-sync replicas (ISRs). 
+In this configuration, the producer sends the data to the leader partition, and the leader writes the message. Then, 
+the leader forwards the message to all the in-sync replicas. These replicas write the data and send acknowledgments back to the leader. 
+Once the leader collects acknowledgments from all the ISRs, it sends a final acknowledgment to the producer, confirming that the message has been 
+safely written across all replicas. This provides the highest level of data consistency and reliability but can introduce more latency due to 
+waiting for acknowledgments from multiple replicas.
+
+Once the producer receives the acknowledgment that the message has been successfully written and 
+replicated across all partitions, it proceeds with producing the next message. This is the core concept behind ack=all. 
+As you can see, this approach significantly reduces the chance of message loss, providing a high level of safety and reliability. However, 
+the trade-off is increased latency. The producer must wait for the message to be replicated not only to the leader but also to all in-sync replicas before 
+receiving the final acknowledgment. This added latency can slow down the process, but it ensures greater data safety and consistency. In this configuration, 
+both the leader and the replicas must acknowledge the message before the producer can move on.
+
+--------------------------------------------------------------------------------------------------------------------------------------------------------
+"KAFKA PRODUCER INTERNALS"
+Kafka Producer Internals: In a Kafka producer setup, the application sends messages to the Kafka cluster using APIs (e.g., Java or Python). 
+Each message contains a topic, a partition (which is generally calculated based on the message’s key), and the actual data. 
+The key is used for partitioning via a hashing algorithm, and the value is the actual message content. 
+The first step in the producer process is serialization, where both the key and value are converted into a byte array using a serializer, 
+enabling the message to be sent over the network as binary data.
+
+Partitioning and Buffering: Once serialized, the data is sent to the partitioner, which determines the partition within the topic where the message will be stored. 
+Kafka uses a simple hashing mechanism on the key (if provided) to decide which partition to write to. 
+After partitioning, the message isn’t sent directly to the Kafka cluster but rather to an internal buffer. Each partition has its own buffer, 
+which accumulates messages for efficient handling. The buffer helps optimize input/output operations and compression, especially in scenarios like run-length encoding.
+
+Batching Messages: Kafka doesn't send messages individually. Instead, it batches messages together from the buffer for efficient network use. 
+The producer collects messages into batches, which are then sent to the Kafka cluster. The size of these batches can be controlled using configuration parameters 
+such as linger.ms (linger time in milliseconds) and batch.size (maximum batch size in bytes). 
+Kafka waits for either the specified time to elapse or the batch size to be reached before sending the batch.
+
+Batching Control Parameters: The linger.ms parameter defines how long the producer waits before sending accumulated messages, and 
+batch.size sets the maximum size for each batch. For example, if you set linger.ms to 5 milliseconds and batch.size to 5 MB, 
+Kafka will either wait 5 milliseconds for more messages to accumulate or send the batch once it reaches 5 MB—whichever happens first. This helps 
+balance between throughput and latency, ensuring messages are sent efficiently.
+
+Retries and Record Metadata: If message writing to the Kafka cluster fails due to networking issues or other problems, 
+Kafka doesn’t throw an immediate exception. Instead, it retries the operation based on the configured retry parameter. For instance, 
+if retries are set to 5, Kafka will attempt to send the message 5 times before failing. Once the message is successfully written, Kafka sends metadata 
+to the producer, including the partition, offset, and timestamp of the message, confirming the write operation.
+
+Handling High Message Throughput: If the producer is producing messages at a very high rate, and the buffer size 
+is insufficient (e.g., the buffer is set to 32 MB), the buffer can fill up quickly, preventing new messages from being written to the Kafka cluster. 
+In such cases, the producer may need to increase the buffer size to allow for efficient message accumulation and avoid message loss. 
+This type of issue can be resolved only with a clear understanding of Kafka's architecture and configuration parameters.
 --------------------------------------------------------------------------------------------------------------------------------------------------------
 "KAFKA TOPIC PARTITIONS AND PRODUCERS USING PYTHON"
 with_partition.py file
@@ -397,7 +547,67 @@ so we use fluch() and close() to consume the all records
 
 
 --------------------------------------------------------------------------------------------------------------------------------------------------------
+"PRODUCER RETRIES & IDEMPOTENT PRODUCER IN KAFKA"
+In Kafka, when idempotence is enabled, the producer ensures that duplicate messages are not written to the Kafka cluster in case of failures during the write operation. 
+If a batch fails to be acknowledged, Kafka does not resend it, but instead sends an acknowledgement to the producer, ensuring that the batch is only written once. 
+This prevents duplicacy and guarantees that each message is written exactly once. However, a potential problem arises when the producer is sending multiple batches to a single partition. 
+If the first batch is successfully written, but the second batch fails due to a network or server issue, Kafka retries sending the second batch. 
+Meanwhile, the third batch might be successfully written, causing a disruption in the order of messages within the partition. 
+This could result in a sequence like "first batch, third batch, second batch," which violates the expected ordering.
+
+To solve this issue, Kafka provides the max.in.flight.requests.per.connection configuration. 
+This parameter controls how many requests Kafka can send before receiving an acknowledgment for the previous ones. 
+If set to a higher value (e.g., 5), Kafka will send multiple batches simultaneously, potentially causing the message order to be disrupted during retries. 
+However, if you set max.in.flight.requests.per.connection to 1, Kafka will only send one request at a time and wait for the acknowledgment before sending the next batch. 
+This ensures that even during retries, Kafka will not send any new batches until the current batch has been fully processed, thus preserving the order of messages within a partition.
+
+By enabling this setting, you're effectively making the producer's message writing operation synchronous. 
+This means that Kafka will wait for the acknowledgment of the first batch before sending the second, thereby preventing potential message order issues that arise from retry attempts. 
+While setting max.in.flight.requests.per.connection to 1 can slow down the writing process due to the enforced waiting period, it ensures that message order is strictly maintained, 
+which is essential in scenarios where message sequencing is critical. 
+Therefore, enabling idempotence and configuring the max.in.flight.requests.per.connection parameter to 1 provides the trade-off between safety and performance, ensuring data integrity and ordered delivery.
+
+--------------------------------------------------------------------------------------------------------------------------------------------------------
 "IN-DEPTH INTUITION ON DIFFERENT WAYS TO SEND MESSAGES TO KAFKA TOPIC USING PYTHON"
+
+#1. Fire-and-Forget
+Definition:
+In fire-and-forget, the Kafka producer sends a message to the broker without waiting for any acknowledgment.
+The producer assumes the message is delivered successfully and moves on.
+Pros:
+Fastest method (lowest latency).
+No blocking or waiting.
+Cons:
+No guarantee the message was received.
+If the broker is down or there’s a network issue, the message is lost.
+Not reliable – useful only when occasional message loss is acceptable (e.g., logging or metrics).
+2. Synchronous Send
+Definition:
+The producer sends the message and waits (blocks) until it gets an acknowledgment from the broker.
+This is done using .get() on the Future returned by send().
+Pros:
+Reliable – the producer knows whether the message was successfully written.
+Good for critical data where loss is not acceptable.
+Cons:
+Slower – producer is blocked until broker responds.
+Not suitable for high-throughput, low-latency systems.
+3. Asynchronous Send
+Definition:
+The producer sends the message and attaches a callback to handle the response (success or failure).
+It doesn’t block the main thread and allows sending other messages in the meantime.
+Pros:
+Efficient and non-blocking.
+Allows error handling with retries, logs, alerts, etc.
+Ideal for high-throughput systems.
+Cons:
+More complex logic due to callbacks.
+Messages are handled out of order, so tracking sequence requires extra care.
+
+Kafka Acknowledgment Levels (acks config)
+This affects all three modes:
+acks=0 → Fire-and-forget behavior
+acks=1 → Leader broker only needs to ack (risk of data loss if leader fails after ack)
+acks=all → All replicas must ack (strongest durability)
 
 1)FIRE AND FORGET:
 starting the zookeeper: zookeeper-server-start zookeeper.properties
@@ -445,8 +655,75 @@ start the consumer:>D:\kafka\bin\windows\kafka-console-consumer --topic hello_wo
 run the python code: different_ways
 the producer shows the messages that are sent, now if broker go down then consumer shows error in console and producer also shows error in console that from where it got failed to send messages
 
+--------------------------------------------------------------------------------------------------------------------------------------------------------
+"STRATEGIES FOR KAFKA TOPIC PARTITIONING WHEN KEY=NULL"
+#How Kafka Distributes Messages with a Null Key — Round-Robin vs. Sticky Partitioning
+When a Kafka producer sends messages without a key (i.e., the message key is null), Kafka needs to decide how to distribute these messages across multiple partitions of a topic. Let's first understand the simplest approach Kafka could use: round-robin partitioning.
 
+Round-Robin Partitioning (Simplest Approach)
+In this method, Kafka distributes each incoming message to the next available partition in a cyclical manner. For example, if a topic has 5 partitions (P0 to P4) and the producer receives six messages (1 to 6), they are distributed like this:
 
+Message 1 → Partition 0
+Message 2 → Partition 1
+Message 3 → Partition 2
+Message 4 → Partition 3
+Message 5 → Partition 4
+Message 6 → back to Partition 0
+
+This continues in a round-robin fashion.
+While this method ensures an even distribution of messages across partitions, it comes with two main drawbacks:
+Performance Overhead: Each message is written to a different partition, which increases CPU usage and latency.
+Broker Load: The broker has to keep switching partitions for each message, adding overhead and reducing efficiency.
+
+To address these inefficiencies, Kafka introduced an optimized method for keyless message distribution called Sticky Partitioning.
+Sticky Partitioning (Optimized Approach)
+In sticky partitioning, Kafka takes advantage of the producer's batching mechanism. Instead of assigning every individual message to a different partition, it groups multiple messages into a batch (controlled by batch.size or linger.ms) and then sends the entire batch to a single partition.
+
+For example:
+Messages 1, 2, 3 form a batch → sent to Partition 0
+Messages 4, 5, 6 form the next batch → sent to Partition 1
+This approach offers two major benefits:
+Lower Latency: Writing a batch of messages to a single partition is faster than sending them to multiple partitions.
+Reduced CPU Usage on Broker: Since all messages in a batch go to the same partition, the broker doesn't need to compute a new partition for each individual message, saving processing effort.
+This behavior is called "sticky" because the producer "sticks" to a single partition for the entire batch duration. Once a batch is sent, the producer may choose a new partition for the next batch.
+--------------------------------------------------------------------------------------------------------------------------------------------------------
+
+"CONSUMER & CONSUMER GROUP IN KAFKA"
+Kafka Producer to Consumer Flow – Serialization & Communication
+In Apache Kafka, when a producer (written in Java, Python, etc.) sends data to a Kafka topic, the data first undergoes serialization. This is essential because Kafka transmits data across the network as bytes, so both the key and value of a message are converted to byte arrays. When a consumer receives the data from a topic, it must perform deserialization, which means converting the byte arrays back into the original data format. For this to work seamlessly, the consumer must be aware of the serialization format used by the producer (e.g., String, JSON, Avro, etc.).
+
+Another key architectural point is that Kafka follows a pull model, not a push model. This means the consumer requests data from Kafka; Kafka does not automatically push messages to the consumer. This is a fundamental concept and often asked in interviews.
+
+Ordered Consumption from Partitions
+When a consumer reads messages from a partition, it does so in order of offsets, from low to high. For instance, if offsets 0, 1, 2, and 3 exist in a partition, the consumer must read offset 0 first, then 1, and so on—it cannot skip ahead. Kafka guarantees ordered consumption within a single partition, but not across partitions.
+
+Need for Consumer Groups – Scaling Consumers
+Suppose there are multiple producers sending high volumes of data into a Kafka topic with several partitions. Initially, one might use a single consumer to read the messages, perform validations, and store results into a database or another system. However, this single consumer can become a bottleneck if the rate of incoming messages exceeds its processing capability. Over time, it will fall behind and fail to keep up with the producers.
+
+To resolve this, Kafka introduces the concept of a Consumer Group.
+
+What is a Consumer Group?
+A consumer group is a collection of consumers that share the work of consuming messages from a topic. Each consumer in the group is assigned one or more partitions, and no two consumers in the same group read the same partition. Kafka ensures load balancing and automatically performs rebalancing when consumers join or leave the group.
+
+Example:
+Suppose a topic has 5 partitions.
+You create a consumer group with 3 consumers.
+Kafka might assign:
+Consumer 1 → Partition 0, Partition 1
+Consumer 2 → Partition 2, Partition 4
+Consumer 3 → Partition 3
+
+If Consumer 3 fails, Kafka will rebalance, and another consumer will take over Partition 3.
+Scaling Rule and Idle Consumers
+Keep in mind: the number of consumers in a group should not exceed the number of partitions. If you have more consumers than partitions, the extra consumers will remain idle, as a partition can only be consumed by one consumer in a group at a time. So, if a topic has 4 partitions and you add 5 consumers in the group, the 5th consumer will be idle.
+
+Multiple Consumer Groups for the Same Topic
+Kafka also allows multiple consumer groups to consume data from the same topic. Each group operates independently, meaning:
+
+Group A might be for real-time analytics.
+Group B might be for storing the data in a data lake.
+Each group maintains its own offset tracking and does not affect the other.
+This is useful when different applications or services need to consume the same data stream but perform different operations on it.
 --------------------------------------------------------------------------------------------------------------------------------------------------------
 "KAFKA CONSUMER GROUPS CLI DEMO | KAFKA-PYTHON"
 
@@ -672,6 +949,28 @@ PS D:\aa_kafka_python>
 
 
 --------------------------------------------------------------------------------------------------------------------------------------------------------
+IN-DEPTH INTUTION ON TOPIC LOG COMPACTION
+#Kafka stores messages like a file system — topics are like folders, and messages go into files called segments. 
+When a producer sends data very fast, Kafka stores these messages, even if the consumer is slow to read them. By default, messages are kept for 7 days, 
+even after being read. But if the server (broker) has limited memory and the message rate is too high, it can run out of space and crash.
+To prevent this, we can reduce how long Kafka keeps messages — for example, from 7 days to 1 or 2 days. This setting can be adjusted while 
+creating the topic or from the server configuration. This helps manage memory better and keeps Kafka running smoothly.
+
+in server.properties
+log.retention.hours=168
+log.retention.bytes=16856782496
+log.segment.bytes=16856782496 (where another segment files are created if the file reach this size)
+log.retention.checkinterval.ms=30000000 (checks if they can be deleted according to policies)
+
+In real-time systems using Change Data Capture (CDC), the same record (based on a primary key) can be updated multiple times. For example, initially, a record with primary key 1 might have the name "A". Later, the name gets updated to "B". Both of these changes are sent to a Kafka topic — first 1,A and then 1,B.
+
+Now, suppose you are replicating data from the source system to a target system (like a database or data warehouse). You only want the latest value for each primary key in the target — in this case, only 1,B, not both records.
+
+To achieve this, Kafka offers a feature called log compaction. With log-compacted topics, Kafka automatically removes older messages for the same key and retains only the latest message (1,B here). This is very helpful when you don't need to store the full history of changes — just the current or most recent state.
+
+So, in CDC use cases where only the final state matters, log-compacted topics help save space and keep the data clean and up to date.
+--------------------------------------------------------------------------------------------------------------------------------------------------------
+
 "Schema registry"
 
 the producer produces the message and consumer consumes the messages
