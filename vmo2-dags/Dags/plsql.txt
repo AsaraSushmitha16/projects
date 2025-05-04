@@ -1,0 +1,94 @@
+INSERT
+
+STEP-1--
+we will call the main procedure prc_reverse_main contains 3 parameters
+1)p_job_id:filename (input)
+2)p_dml:insert,update,delete (input)
+3)p_status:pass,fail (output)
+
+check the p_dml operation and take the g3e_fno,feature_name from tb_feature to check temprary table name
+
+STEP-2--
+open a loop calling the second procedure prc_reverse_data_connector contains 4 parameters
+1)p_job_id (input)
+2)p_fno=g3e_fno (input)
+3)p_dml (input)
+4)p_status (output)
+
+in this procedure the first validation is finding the temp table name
+by passing the p_fno number to function fun_table_name(tb_fno_feature name) it will return output of v_tmp_table_name
+
+we assign p_fno value to v_fno varaible
+and if p_fno is connections as vmx_id value is not present we take the vmx_id value from other columns from the same table like below
+
+if p_fno = 11801 we add value to vmx_id in existing table to v_temp_table 
+we assign vmx_housing value to vmx_id
+
+if p_fno = 11802,3,4 we add value to vmx_id in existing table to v_temp_table 
+we assign structure value to vmx_id
+
+check v_tmp_table_name is null means g3e_fno not exist in Gcomms will raise exception e_not_exists(no p_fno)
+
+if count(*) in v_tmp_table_name is 0 then data is not loaded from csv becoz no data in csv raise exception kindly to check the csv is recived from IQGEO or not
+if not 0, then assign the count of v_temp_table all rows in v_table_cnt
+
+
+
+STEP-3--
+now select the main table from tb_components and assing it to v_main_table
+opening a REC2 for loop now loop all the column_names from v_tmp_table_name same as i
+	if rec2.coulmn_name = vmx_hosuing,vmx_manhole,vmx_inequip,vmx_strcuture
+	assign v_coulmn_IQGEO =rec2.coulmn_name
+
+	if rec2.coulmn_name = vmx_out_strcuture,vmx_bundle,vmx_hosuing
+	assign v_coulmn_IQGEO2 =rec2.coulmn_name
+
+	if rec2.coulmn_name = vmx_N_ducts,vmx_out_equip
+	assign v_coulmn_IQGEO3 =rec2.coulmn_name
+	
+	we are checking the column_name is present in data_mapping sheet in data exchange field or not
+	if not present exception, if present v_coulmn_count store count 1
+
+loop completed
+
+STEP-4--
+
+we will use cursor name cur_vmx_id to store all the records in v_temp_table of only
+number(vmx_id),vmx_id,vmx_change_type,vmx_Region and assign into v_vmx_id,v_IQGEO_id,v_change_type,v_region in the cursor now the cursor looks like
+
+v_vmx_id,v_IQGEO_id,v_change_type,v_region
+0         a/1         insert         ni
+1         b/2         insert         ni
+2         c/3         insert         ni
+3         d/4         insert         ni
+
+now we will open a for loop for the cursor
+	as we know vmx_region is not present for the connections so
+	IF P_FNO in (11801,11802,11803,11804) then
+            EXECUTE IMMEDIATE 'SELECT REGION FROM B$GC_NETELEM WHERE G3E_FID='||pkg_data_connector_reverse.FUN_GET_GCOMS_FID(V_IQGO_VMX_ID,P_JOB_ID) INTO V_REGION 
+
+	and also 
+	
+	IF  p_FNO IN (7201,7202,7203) THEN
+         EXECUTE IMMEDIATE 'SELECT  VMX_CABLE FROM '||V_TMP_TABLE_NAME||' WHERE VMX_ID = '||''''||V_IQGO_VMX_ID||'''' ||' AND ROWNUM=1 '  INTO v_vmx_cable;   
+      END IF; 
+
+	if v_change_type is insert then prc_post_jon(v_fno(input),v_ltt_id(output),v_job_id(output))
+
+	(except connections) take 1by1 record through for loop and our agenda is to post it in GCOM ui, so we check the record is already present in the tb_fid_gcoms_iqgeo whether it is new or already processed(raise exception)
+
+	to post the job we get g3efid from functions
+	
+	if p_fno is not in connections then we insert the row of values
+	 	
+
+
+
+
+
+
+
+
+
+
+

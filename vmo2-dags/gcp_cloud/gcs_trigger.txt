@@ -1,0 +1,49 @@
+import logging
+from google.cloud import storage
+from google.cloud import bigquery
+
+from google.cloud.bigquery import SchemaField
+
+# Instantiate the storage client
+storage_client = storage.Client()
+bigquery_client = bigquery.Client()
+
+def process_files(data, context):
+    """Process files from a specific Cloud Storage bucket."""
+    try:
+        bucket_name = data['bucket']
+        file_name = data['name']
+
+        if file_name.endswith('.csv'):
+            bucket = storage_client.bucket(bucket_name)
+            blob = bucket.blob(file_name)
+            content = blob.download_as_string().decode('utf-8').split('\n')
+            rows = [row.split(',') for row in content if row]  # Split rows by comma and exclude empty rows
+            result = rows[1:]  # Exclude the first row (header) and add remaining rows to result
+
+            b = insert_into_bigquery(result)
+            return b
+    except Exception as e:
+        logging.error(f"Error processing file {file_name}: {e}")
+        return 'Error occurred'
+
+def insert_into_bigquery(data):
+    """Insert data into BigQuery."""
+    try:
+        project_id = 'dataflow-poc-394712'
+        dataset_id = 'vmo2_poc'
+        table_id = 'check_status'
+        dataset_ref = bigquery_client.dataset(dataset_id, project=project_id)
+        table_ref = dataset_ref.table(table_id)
+        table = bigquery_client.get_table(table_ref)
+
+        errors = bigquery_client.insert_rows(table_ref, data, selected_fields=table.schema)
+        if errors:
+            logging.error(f"Errors inserting rows: {errors}")
+            return "not passed"
+        else:
+            logging.info("Data inserted into BigQuery successfully.")
+            return "passed"
+    except Exception as e:
+        logging.error(f"Error inserting data into BigQuery: {e}")
+        return "failed"

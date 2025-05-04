@@ -1,0 +1,88 @@
+- ai can be categorized into 2 sections
+1)gen ai(creates new content can be text,images,video,audio ex:chatgpt)
+2)non gen ai(create the models based on data ex: with credit history provide loan or not)
+ 
+- evolution:
+1)statistical ml
+(it accepts structured data and image detection)
+ 
+but complex images cant be done by statistical ml
+so neural networks came
+2)neural networks
+3)recurrent neural network
+used for language translation
+4)language model
+predicts the next word that comes in the sentence
+self supervised learning
+give the data from any website,book,articles and training pairs then train the neural network
+this predicts the next word in a sentence(ex:gmail)
+5)transformers
+text-to-text-models:
+a)bert
+b)GPT-4: 175 billion parameters(generative pre-trained transformer)
+text-to-image-models:
+a)dall-e
+b)stable diffusion
+text-to-video-models:
+a)openai sora
+
+- LLM(large language model)
+language model
+predicts the next word that comes in the sentence(ex:gmail)
+large language model
+this models are trained with large datasets or volume either it may be wikipedia,google,online books etc(ex:chatgpt)
+palm2--boogle
+lama---meta
+reinforcement learning with human feedback-chatgpt used many humnas interventions to make less toxic
+
+- embeddings and vector database
+embeddings->numeric representation of text in form of vector
+vector database--> it allows to store the embeddings and perform efficient search
+semantic search - undestanding the sentence and gives search result
+a)cosine similarity for matching result
+b)index database with hashing(locality sensitive hashing)
+
+- RETRIEVAL AUGMENTED GENERATION(RAG)
+question-->llm-->daabses(xl,pdf,sql)
+answer<----llm<--databases
+tools for genai-chatgpt4
+azure-openai service
+aws-amazon bedrock
+
+commercial models
+gpt gemini
+
+opensource models
+mistral llama2
+
+langchain--its a python frramework for developing applications
+we can write code and plug to the gpt4 or llama2
+hugging face
+pytorch
+
+LANGCHAIN FUNDAMENTALS
+chatgpt  ->openai api-->gpt3.5 or gpt4
+chatgpt is an application
+gpt3.5 or gpt4 is llm
+
+application--openai api--llm
+limitations are 
+higher cost
+no access to internet/real time knowledge
+no access to private data sources
+
+your llm application---langchain---openai,hugging face bloom
+				   google,database etc
+
+create account in openai
+|
+api
+|
+account--manage account
+|
+api keys
+
+
+
+how to train the database with llm
+tools for gis analytics for llm

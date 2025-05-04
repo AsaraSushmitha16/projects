@@ -1,0 +1,36 @@
+TB_FEATURE: G3E_FNO,FEATURE_NAME,GE3_PRIORITY,CATEGORY
+TB_COMPONENTS:component sheet
+TB_ATTRIBUTES:data mapping sheet
+TB_CDC_PROCESS:modification number,type,G3E_FID,processed
+TB_FID_REGION_WISE:G3E_FNO,FEATURE_NAME,G3E_FID,G3E_FID_AREA,AREA_NAME
+TB_FID_DUPLICATE_LOG
+TB_FID_MISS_DETAIL_LOG
+TB_FID_MISS_SUMMARY_LOG
+
+
+step-1:
+main procedure PRC_MIG_GCOMS_FEATURE it contains 4 parameters
+inputs:
+p_fno - related to feature
+p_fid - 
+p_dml
+output:
+p_query
+
+step-2:
+if p_query is delete and pfno not in fiber splice enclousure
+opening a loop and selecting COLUMN_ORDER,DATA_EXCHANGE_FIELD from tb_components and data_mapping tables
+
+if data_exchange_field is vmx_id or vmx_change_type then data is stored
+if not then storing the value null for all other columns
+
+step-3:
+if p_query is insert or update
+we are checking if p_fno in child if yes then assigning parent fno to v_fno
+
+opening a loop and selecting TC.G3E_TABLE,TC.IS_MAIN_table,DM.COLUMN_NAME,COLUMN_ORDER,TC.TABLE_ALIAS,DATA_EXCHANGE_FIELD,TC.FEAT_USERNAME,DM.DATA_TYPE from tb_components and data_mapping tables
+
+if is_main_table is Y then store the table_alias in v_main_alias(TB0)
+
+in if else conditions we are checking each column and making the logic
+in document if the fileds are empty then we are making logic, if not we then it comes under one to one mapping

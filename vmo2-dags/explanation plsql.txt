@@ -1,0 +1,211 @@
+pre
+
+p_fno,p_fid,p_dml-int
+p_query(out)
+
+
+
+1)2260
+p_dml is insert or update
+if p_fno is child assign it to parent
+IF P_FNO IN (7201,7202,7203) THEN
+           V_FNO := 7200;
+        ELSIF P_FNO IN(11801,11802,11803,11804) THEN
+            V_FNO := 11800;
+        ELSIF P_FNO = 12301 THEN
+            V_FNO := 12300;
+		ELSIF P_FNO = 4001 THEN
+            V_FNO := 4000;
+        ELSE
+           V_FNO := P_FNO;
+
+we will get the fno,from pno we take TC.G3E_TABLE ,TC.IS_MAIN_table,DM.COLUMN_NAME,COLUMN_ORDER,TC.TABLE_ALIAS,DATA_EXCHANGE_FIELD,TC.FEAT_USERNAME,DM.DATA_TYPE FROM tb_components TC
+
+data should be present in correspoiding fno component,data_mapping table
+otherwise throws exception
+
+one we will pass one by one through loop
+2)2298
+
+IF REC1.COLUMN_NAME = 'G3E_GEOMETRY' AND UPPER (REC1.DATA_EXCHANGE_FIELD ) <> 'VMX_ORIENTATION' AND  UPPER (REC1.DATA_EXCHANGE_FIELD ) <> 'VMX_LABEL_ORIENTATION' THEN 
+                    --IF P_FNO IN(11800,7200,7201,7202,7203) THEN
+                      --  V_STRING := V_STRING||'PKG_DATA_CONNECTOR.fun_get_wkb(NVL('||REC1.TABLE_ALIAS||'.'||REC1.COLUMN_NAME|| ','||fun_get_table_alias( REPLACE(REC1.G3E_TABLE ,'B$GC','B$DGC' ),P_FNO)||'.'||REC1.COLUMN_NAME||')) as ' || REC1.DATA_EXCHANGE_FIELD || ','; 
+                    --ELSE
+                    V_STRING := V_STRING||'PKG_DATA_CONNECTOR.fun_get_wkb('||REC1.TABLE_ALIAS||'.'||REC1.COLUMN_NAME|| ') as ' || REC1.DATA_EXCHANGE_FIELD || ','; 
+                    --END IF;
+ 
+            ELSIF UPPER (REC1.DATA_EXCHANGE_FIELD ) = 'VMX_ORIENTATION'  OR UPPER (REC1.DATA_EXCHANGE_FIELD ) = 'VMX_LABEL_ORIENTATION'  THEN
+                --V_STRING := V_STRING || 'pkg_data_connector.fun_convert_double(PKG_DATA_CONNECTOR.fun_get_orientation ('||REC1.TABLE_ALIAS||'.'||REC1.COLUMN_NAME|| ')) as ' || REC1.DATA_EXCHANGE_FIELD || ',';
+				V_STRING := V_STRING || 'pkg_data_connector.fun_convert_double(PKG_DATA_CONNECTOR.fun_get_orientation ('||REC1.TABLE_ALIAS||'.'||REC1.COLUMN_NAME||','||PKG_DATA_CONNECTOR.fun_get_table_alias('B$GC_NETELEM',P_FNO)||'.REGION )) as ' || REC1.DATA_EXCHANGE_FIELD || ',';
+                --V_STRING := V_STRING||'LTRIM (TO_CHAR(PKG_DATA_CONNECTOR.fun_get_orientation ('||REC1.TABLE_ALIAS||'.'||REC1.COLUMN_NAME|| '),'||q'['999999.99')) as ]' || REC1.DATA_EXCHANGE_FIELD || ',';
+ 
+            ELSIF REC1.G3E_TABLE = 'B$GC_CONTAIN' OR REC1.G3E_TABLE = 'B$GC_FCBL' AND UPPER (REC1.DATA_EXCHANGE_FIELD ) = 'VMX_HOUSINGS' THEN
+                V_STRING := V_STRING||'pkg_data_connector.fun_get_conduit ('||v_MAIN_ALIAS||'.G3E_FID,'||V_FNO|| ') as ' || REC1.DATA_EXCHANGE_FIELD || ',';
+ 
+            ELSIF (UPPER (REC1.DATA_EXCHANGE_FIELD ) = 'VMX_HOUSING' OR UPPER (REC1.DATA_EXCHANGE_FIELD ) = 'VMX_HOUSINGS' OR UPPER (REC1.DATA_EXCHANGE_FIELD ) = 'VMX_BUNDLE') AND P_FNO NOT IN (11801,7200)  THEN
+                V_STRING := V_STRING||'pkg_data_connector.fun_get_housing('||v_MAIN_ALIAS||'.g3e_fid,'||V_FNO|| ') as ' || REC1.DATA_EXCHANGE_FIELD || ',';
+			ELSIF UPPER (REC1.DATA_EXCHANGE_FIELD ) = 'VMX_HOUSING' AND P_FNO = 11801 THEN
+                V_STRING := V_STRING||'pkg_data_connector.fun_get_vmx_id('||v_MAIN_ALIAS||'.g3e_fid,'||v_MAIN_ALIAS||'.g3e_fNO ) as ' || REC1.DATA_EXCHANGE_FIELD || ',';
+ 
+            ELSIF UPPER (REC1.DATA_EXCHANGE_FIELD ) = 'VMX_STRUCTURE' THEN
+                V_STRING := V_STRING||'pkg_data_connector.fun_get_housing('||v_MAIN_ALIAS||'.g3e_fid,'||P_FNO|| ') as ' || REC1.DATA_EXCHANGE_FIELD || ',';
+ 
+            ELSIF UPPER (REC1.DATA_EXCHANGE_FIELD ) = 'VMX_CHANGE_TYPE' THEN
+                V_STRING := V_STRING||''''||P_DML||''''||' as ' || REC1.DATA_EXCHANGE_FIELD || ',';
+ 
+            ELSIF UPPER (REC1.DATA_EXCHANGE_FIELD ) = 'VMX_VALIDATED' THEN
+                V_STRING := V_STRING||''''||'false'||''''||' as ' || REC1.DATA_EXCHANGE_FIELD || ',';  
+ 
+            ELSIF UPPER (REC1.DATA_EXCHANGE_FIELD ) ='VMX_IN_EQUIP'  THEN
+                V_STRING :=  V_STRING||'pkg_data_connector.fun_get_in_equip ('||v_MAIN_ALIAS||'.G3E_FID,'||V_FNO|| ') as ' || REC1.DATA_EXCHANGE_FIELD || ',';
+ 
+            ELSIF  UPPER (REC1.DATA_EXCHANGE_FIELD ) ='VMX_OUT_EQUIP'  THEN
+                V_STRING :=  V_STRING||'pkg_data_connector.fun_get_out_equip ('||v_MAIN_ALIAS||'.G3E_FID,'||V_FNO|| ') as ' || REC1.DATA_EXCHANGE_FIELD || ',';
+ 
+            ELSIF  UPPER (REC1.DATA_EXCHANGE_FIELD ) ='VMX_N_DUCTS'  THEN
+                V_STRING :=  V_STRING||'pkg_data_connector.fun_get_num_ducts ('||v_MAIN_ALIAS||'.G3E_FID,'||V_FNO|| ') as ' || REC1.DATA_EXCHANGE_FIELD || ',';
+ 
+            ELSIF  UPPER (REC1.DATA_EXCHANGE_FIELD ) ='VMX_N_FIBER_PORTS' AND P_FNO != 12301 THEN
+                V_STRING :=  V_STRING||'pkg_data_connector.fun_get_fiber_ports ('||v_MAIN_ALIAS||'.G3E_FID,'||V_FNO|| ') as ' || REC1.DATA_EXCHANGE_FIELD || ',';
+ 
+            ELSIF UPPER (REC1.DATA_EXCHANGE_FIELD ) ='VMX_ID'  THEN
+				IF P_FNO IN (7201,7202,7203) THEN
+					V_STRING := V_STRING || 'pkg_data_connector.fun_get_vmx_id ('||v_MAIN_ALIAS||'.G3E_ID,'||P_FNO|| ') as ' || REC1.DATA_EXCHANGE_FIELD || ',';
+				ELSE
+					V_STRING := V_STRING || 'pkg_data_connector.fun_get_vmx_id ('||v_MAIN_ALIAS||'.G3E_FID,'||P_FNO|| ') as ' || REC1.DATA_EXCHANGE_FIELD || ',';
+				END IF;
+			ELSIF UPPER (REC1.DATA_EXCHANGE_FIELD ) ='STRUCTURE' AND P_FNO IN (11802,11803,11804) THEN
+				V_STRING := V_STRING || 'pkg_data_connector.fun_get_vmx_id ('||v_MAIN_ALIAS||'.G3E_FID,'||v_MAIN_ALIAS||'.G3E_FNO) as ' || REC1.DATA_EXCHANGE_FIELD || ',';
+            ELSIF UPPER (REC1.DATA_EXCHANGE_FIELD ) ='VMX_CABLE' THEN
+                V_STRING := V_STRING || 'pkg_data_connector.fun_get_equip_name('||v_MAIN_ALIAS||'.G3E_FID,'||v_MAIN_ALIAS||'.G3E_FNO'|| ') as ' || REC1.DATA_EXCHANGE_FIELD || ',';
+ 
+            ELSIF UPPER (REC1.DATA_EXCHANGE_FIELD ) ='VMX_MANHOLE'  THEN
+                V_STRING := V_STRING || 'pkg_data_connector.fun_get_vmx_manhole ('||v_MAIN_ALIAS||'.G3E_FID,'||P_FNO|| ') as ' || REC1.DATA_EXCHANGE_FIELD || ',';
+ 
+            ELSIF UPPER (REC1.DATA_EXCHANGE_FIELD ) ='VMX_IN_STRUCTURE'  THEN
+                V_STRING := V_STRING || 'pkg_data_connector.fun_get_vmx_in_structure ('||v_MAIN_ALIAS||'.G3E_FID,'||P_FNO|| ') as ' || REC1.DATA_EXCHANGE_FIELD || ',';
+ 
+            ELSIF UPPER (REC1.DATA_EXCHANGE_FIELD ) ='VMX_OUT_STRUCTURE'  THEN
+                V_STRING := V_STRING || 'pkg_data_connector.fun_get_vmx_out_structure ('||v_MAIN_ALIAS||'.G3E_FID,'||P_FNO|| ') as ' || REC1.DATA_EXCHANGE_FIELD || ',';
+ 
+            ELSIF UPPER (REC1.DATA_EXCHANGE_FIELD ) ='PORT_NAME' THEN
+				V_STRING := V_STRING || ' decode(in_ftype, 7200,pkg_data_connector.fun_get_port_name(tb0.out_ftype, tb0.out_fid, tb0.out_low + ROW_NUMBER()
+            OVER(PARTITION BY g3e_id ORDER BY g3e_id) - 1),pkg_data_connector.fun_get_port_name(tb0.in_ftype, tb0.in_fid, tb0.in_low + ROW_NUMBER()
+OVER(PARTITION BY g3e_id ORDER BY g3e_id) - 1) ) AS ' || REC1.DATA_EXCHANGE_FIELD || ',';
+            ELSIF UPPER (REC1.DATA_EXCHANGE_FIELD ) ='FIBER_NO' THEN
+                V_STRING := V_STRING || 'decode(in_ftype, 7200,IN_LOW,out_low)+ROW_NUMBER() OVER (PARTITION BY G3E_ID ORDER BY G3E_ID) -1  as ' || REC1.DATA_EXCHANGE_FIELD || ',';
+ 
+            ELSIF UPPER (REC1.DATA_EXCHANGE_FIELD ) ='EQUIP1_PORT_NAME'  THEN
+                V_STRING := V_STRING || ' pkg_data_connector.fun_get_port_name ('||v_MAIN_ALIAS||'.IN_FTYPE,'||v_MAIN_ALIAS||'.IN_FID,'||v_MAIN_ALIAS||'.IN_LOW+ ROW_NUMBER()OVER(PARTITION BY g3e_id ORDER BY g3e_id) - 1 ) as ' || REC1.DATA_EXCHANGE_FIELD || ',';
+				--V_STRING := V_STRING || 'LVL as ' || REC1.DATA_EXCHANGE_FIELD || ',';
+ 
+            ELSIF UPPER (REC1.DATA_EXCHANGE_FIELD ) ='EQUIP2_PORT_NAME'  THEN
+                V_STRING := V_STRING || ' pkg_data_connector.fun_get_port_name ('||v_MAIN_ALIAS||'.OUT_FTYPE,'||v_MAIN_ALIAS||'.OUT_FID,'||v_MAIN_ALIAS||'.OUT_LOW+ROW_NUMBER() OVER (PARTITION BY G3E_ID ORDER BY G3E_ID) -1 ) as ' || REC1.DATA_EXCHANGE_FIELD || ',';
+				--V_STRING := V_STRING || 'OUT_LOW+ROW_NUMBER() OVER (PARTITION BY G3E_ID ORDER BY G3E_ID) -1 as ' || REC1.DATA_EXCHANGE_FIELD || ',';
+ 
+            ELSIF UPPER (REC1.DATA_EXCHANGE_FIELD ) ='VMX_N_FIBER_OUT_PORTS' OR (UPPER (REC1.DATA_EXCHANGE_FIELD ) ='VMX_N_FIBER_PORTS' AND P_FNO = 12301) THEN
+                V_STRING := V_STRING || 'pkg_data_connector.fun_get_fiber_out_ports ('||REC1.TABLE_ALIAS||'.MIN_MATERIAL ) as ' || REC1.DATA_EXCHANGE_FIELD || ',';
+ 
+            ELSIF UPPER (REC1.DATA_TYPE ) = 'DATE' THEN 
+                V_STRING := V_STRING || 'TO_CHAR('||REC1.TABLE_ALIAS||'.'||REC1.COLUMN_NAME|| ',''YYYY-MM-DD'') as ' || REC1.DATA_EXCHANGE_FIELD || ',';
+ 
+            ELSIF UPPER (REC1.DATA_EXCHANGE_FIELD ) ='CABLE1' THEN 
+                V_STRING := V_STRING || 'CONCAT(pkg_data_connector.fun_feature_name('||v_MAIN_ALIAS||'.IN_FTYPE),'||v_MAIN_ALIAS||'.IN_FID ) as ' || REC1.DATA_EXCHANGE_FIELD || ',';
+ 
+            ELSIF UPPER (REC1.DATA_EXCHANGE_FIELD ) ='CABLE2' THEN 
+                V_STRING := V_STRING || 'CONCAT(pkg_data_connector.fun_feature_name('||v_MAIN_ALIAS||'.OUT_FTYPE),'||v_MAIN_ALIAS||'.OUT_FID ) as ' || REC1.DATA_EXCHANGE_FIELD || ',';
+ 
+            ELSIF UPPER (REC1.COLUMN_NAME ) = 'DIAMETER' AND P_FNO = 7200 THEN
+                V_STRING := V_STRING || 'DECODE (LENGTH(TO_CHAR(MOD(ABS('||v_MAIN_ALIAS||'.'||REC1.COLUMN_NAME||'),1)))-1,0,'||v_MAIN_ALIAS||'.'||REC1.COLUMN_NAME||q'[||'.00',1,]'||v_MAIN_ALIAS||'.'||REC1.COLUMN_NAME||q'[||'0') as ]' || REC1.DATA_EXCHANGE_FIELD || ',';
+ 
+            ELSIF UPPER (REC1.COLUMN_NAME ) =  'ACTUAL_LENGTH' OR UPPER (REC1.COLUMN_NAME ) = 'PLANNED_LENGTH' OR         
+                UPPER (REC1.DATA_EXCHANGE_FIELD ) ='ADDR_DISTANCE' OR UPPER (REC1.DATA_EXCHANGE_FIELD ) ='SADDR_DISTANCE' OR
+                UPPER (REC1.DATA_EXCHANGE_FIELD ) ='LENGTH_IN_TRENCH' OR
+                UPPER (REC1.DATA_EXCHANGE_FIELD ) ='MEASURED_LENGTH' OR UPPER (REC1.DATA_EXCHANGE_FIELD ) ='SLACK_START_LOCATION' OR
+                UPPER (REC1.DATA_EXCHANGE_FIELD ) ='NUMBER_OF_COAX_TUBES' OR UPPER (REC1.DATA_EXCHANGE_FIELD ) ='H_FREQ_ACTUAL' THEN
+                V_STRING := V_STRING || 'pkg_data_connector.fun_convert_double('||REC1.TABLE_ALIAS||'.'||REC1.COLUMN_NAME||')  as ' || REC1.DATA_EXCHANGE_FIELD || ',';
+                --V_STRING := V_STRING || 'DECODE ( TRUNC('||REC1.TABLE_ALIAS||'.'||REC1.COLUMN_NAME||'),0,TO_CHAR('||REC1.TABLE_ALIAS||'.'||REC1.COLUMN_NAME||','||q'['FM9999999990.00'),TO_CHAR(]'||REC1.TABLE_ALIAS||'.'||REC1.COLUMN_NAME||','||q'['FM9999999990.00')) as ]' || REC1.DATA_EXCHANGE_FIELD || ',';
+                --V_STRING := V_STRING || 'DECODE (LENGTH(TO_CHAR(MOD(ABS('||REC1.TABLE_ALIAS||'.'||REC1.COLUMN_NAME||'),1)))-1,0,'||REC1.TABLE_ALIAS||'.'||REC1.COLUMN_NAME||q'[||'.00',1,]'||REC1.TABLE_ALIAS||'.'||REC1.COLUMN_NAME||q'[||'0',2,]'||REC1.TABLE_ALIAS||'.'||REC1.COLUMN_NAME||' ) as ' || REC1.DATA_EXCHANGE_FIELD || ',';
+ 
+                 --V_STRING := V_STRING || 'to_binary_float('||v_MAIN_ALIAS||'.'||REC1.COLUMN_NAME||') as ' || REC1.DATA_EXCHANGE_FIELD || ',';
+ 
+            ELSIF UPPER (REC1.DATA_EXCHANGE_FIELD ) ='TOTAL_LENGTH' AND  P_FNO = 9100 THEN
+                V_STRING := V_STRING || 'pkg_data_connector.fun_convert_double('||REC1.TABLE_ALIAS||'.'||REC1.COLUMN_NAME||')  as ' || REC1.DATA_EXCHANGE_FIELD || ',';
+ 
+            ELSIF  UPPER (REC1.DATA_EXCHANGE_FIELD ) ='EQUIP1'  THEN
+                V_STRING := V_STRING || 'pkg_data_connector.fun_get_equip_name ('||v_MAIN_ALIAS||'.IN_FID,'||v_MAIN_ALIAS||'.IN_FTYPE ) as ' || REC1.DATA_EXCHANGE_FIELD || ',';
+ 
+            ELSIF UPPER (REC1.DATA_EXCHANGE_FIELD ) = 'VMX_LABEL_ALIGNMENT' OR UPPER (REC1.DATA_EXCHANGE_FIELD ) = 'PIA_STRUCT_OBJECTID' OR
+            UPPER (REC1.DATA_EXCHANGE_FIELD ) ='TOTAL_LENGTH' THEN
+                V_STRING := V_STRING || 'ROUND('||REC1.TABLE_ALIAS||'.'||REC1.COLUMN_NAME||') as ' || REC1.DATA_EXCHANGE_FIELD || ',';
+ 
+            ELSIF UPPER (REC1.DATA_EXCHANGE_FIELD ) = 'POSITION' AND P_FNO IN (12300,12301) THEN
+                V_STRING := V_STRING || 'ROUND('||REC1.TABLE_ALIAS||'.'||REC1.COLUMN_NAME||') as ' || REC1.DATA_EXCHANGE_FIELD || ',';
+ 
+            ELSIF (UPPER (REC1.DATA_EXCHANGE_FIELD ) = 'HEIGHT' OR UPPER (REC1.DATA_EXCHANGE_FIELD ) = 'WIDTH' OR UPPER (REC1.DATA_EXCHANGE_FIELD ) = 'DEPTH' OR UPPER (REC1.DATA_EXCHANGE_FIELD ) = 'LENGTH' OR UPPER (REC1.DATA_EXCHANGE_FIELD ) = 'POLE_LENGTH') AND P_FNO !=2700 THEN
+                V_STRING := V_STRING || 'ROUND('||REC1.TABLE_ALIAS||'.'||REC1.COLUMN_NAME||') as ' || REC1.DATA_EXCHANGE_FIELD || ',';
+ 
+            ELSIF (UPPER (REC1.DATA_EXCHANGE_FIELD ) =  'HEIGHT' OR UPPER (REC1.DATA_EXCHANGE_FIELD  ) = 'WIDTH' OR 
+            UPPER (REC1.DATA_EXCHANGE_FIELD  ) = 'LENGTH' OR UPPER (REC1.DATA_EXCHANGE_FIELD  ) = 'FRAME_SIZE' OR 
+            UPPER (REC1.DATA_EXCHANGE_FIELD  ) = 'COVER_DIAMETER') and P_FNO = 2700 THEN
+                V_STRING := V_STRING || 'pkg_data_connector.fun_convert_double('||REC1.TABLE_ALIAS||'.'||REC1.COLUMN_NAME||')  as ' || REC1.DATA_EXCHANGE_FIELD || ',';
+                --V_STRING := V_STRING || 'DECODE (LENGTH(TO_CHAR(MOD(ABS('||REC1.TABLE_ALIAS||'.'||REC1.COLUMN_NAME||'),1)))-1,0,'||REC1.TABLE_ALIAS||'.'||REC1.COLUMN_NAME||q'[||'.00',1,]'||REC1.TABLE_ALIAS||'.'||REC1.COLUMN_NAME||q'[||'0' ) as ]' || REC1.DATA_EXCHANGE_FIELD || ',';
+ 
+            ELSIF  UPPER (REC1.DATA_EXCHANGE_FIELD ) ='EQUIP2' THEN
+                V_STRING := V_STRING || 'pkg_data_connector.fun_get_equip_name ('||v_MAIN_ALIAS||'.OUT_FID,'||v_MAIN_ALIAS||'.OUT_FTYPE ) as ' || REC1.DATA_EXCHANGE_FIELD || ',';
+                --V_STRING := V_STRING || 'DECODE(IN_FTYPE,7200,''RX'',''TX'') as ' || REC1.DATA_EXCHANGE_FIELD || ',';
+ 
+            ELSIF UPPER (REC1.DATA_EXCHANGE_FIELD ) ='EQUIP_SIDE' THEN
+                V_STRING := V_STRING || 'decode (in_ftype,7200,pkg_data_connector.fun_get_equip_side(out_fid, out_low) , pkg_data_connector.fun_get_equip_side(in_fid, in_low) )  as ' || REC1.DATA_EXCHANGE_FIELD || ',';
+            ELSIF UPPER (REC1.DATA_EXCHANGE_FIELD ) ='EQUIP_LOW' THEN
+                V_STRING := V_STRING || 'decode ( in_ftype,7200,pkg_data_connector.fun_get_RXPorts(tb0.out_fid,TB0.out_low),pkg_data_connector.fun_get_RXPorts(tb0.in_fid,tb0.in_low )) as ' || REC1.DATA_EXCHANGE_FIELD || ',';
+            ELSIF UPPER (REC1.DATA_EXCHANGE_FIELD ) ='EQUIP_HIGH' THEN
+                V_STRING := V_STRING || 'decode ( in_ftype,7200,pkg_data_connector.fun_get_RXPorts(tb0.out_fid,TB0.out_high),pkg_data_connector.fun_get_RXPorts(tb0.in_fid,tb0.IN_HIGH)) as ' || REC1.DATA_EXCHANGE_FIELD || ',';  
+           ELSIF UPPER (REC1.DATA_EXCHANGE_FIELD ) ='CABLE_LOW' THEN
+                V_STRING := V_STRING || 'decode ( in_ftype,7200,TB0.in_low,tb0.out_low ) as ' || REC1.DATA_EXCHANGE_FIELD || ',';
+            ELSIF UPPER (REC1.DATA_EXCHANGE_FIELD ) ='CABLE_HIGH' THEN
+                V_STRING := V_STRING || 'decode ( in_ftype,7200,TB0.IN_high,tb0.OUT_HIGH) as ' || REC1.DATA_EXCHANGE_FIELD || ',';         
+            ELSIF UPPER (REC1.DATA_EXCHANGE_FIELD ) ='EQUIP' THEN
+                V_STRING := V_STRING || 'decode ( in_ftype,7200,pkg_data_connector.fun_get_equip_name(out_fid,out_ftype),
+  pkg_data_connector.fun_get_equip_name(in_fid, in_ftype)) as ' || REC1.DATA_EXCHANGE_FIELD || ',';
+ 
+            ELSIF UPPER (REC1.DATA_EXCHANGE_FIELD ) ='CABLE'  THEN
+                V_STRING := V_STRING || 'decode ( in_ftype,7200,pkg_data_connector.fun_get_vmx_id(tb0.in_fid, tb0.in_ftype),
+  pkg_data_connector.fun_get_equip_name(tb0.out_fid, tb0.out_ftype)) as ' || REC1.DATA_EXCHANGE_FIELD || ',';
+ 
+            ELSIf REC1.COLUMN_NAME is not null then
+                V_STRING := V_STRING||REC1.TABLE_ALIAS||'.'||REC1.COLUMN_NAME|| ' as ' || REC1.DATA_EXCHANGE_FIELD || ',';
+            END IF;
+        END LOOP;
+
+
+3)we have completed the syntax for the query
+
+SELECT  TC.G3E_TABLE ,TC.IS_MAIN_table,TC.TABLE_ALIAS
+                        FROM tb_components TC 
+                        where TC.G3E_FNO = P_FNO 
+                        AND upper (TC.REQUIRED_FOR_IQGEO) = 'Y'
+result:
+B$GC_HYPERLINK	N	TB2
+B$GC_FCBL	Y	TB0
+B$GC_FCBL_L	N	TB16
+B$GC_NETELEM	N	TB19
+
+if main table will be v_string0 contains
+if not v_string1
+p_query := 'SELECT ' ||RTRIM(V_STRING,',')||chr(10)||' FROM '||V_STRING0||V_STRING1||' WHERE '||v_MAIN_ALIAS||'.LTT_ID = 0 AND '||v_MAIN_ALIAS||'.G3e_FNO = '||V_FNO;
+4)2470
+p_query := 'SELECT ' ||RTRIM(V_STRING,',')||chr(10)||' FROM '||V_STRING0||V_STRING1||' WHERE '||v_MAIN_ALIAS||'.LTT_ID = 0 AND '||v_MAIN_ALIAS||'.G3e_FNO = '||V_FNO=7200;
+if 7203 then assign 7200
+
+5)2474
+if p_fno=11803(patch_lead) tb_level_patchlead table need to be created
+(connection between equipment to euipment)
+all connections sharing the same table name 
+to identify feature amoung features we are adding condition
+each feature having diff diff condition will filter the record
+
+if p_fno=11801
+p_query :=  REPLACE (p_query,'TB0.G3e_FNO = 11800', ' OUT_FTYPE=7200 AND IN_FTYPE=7200 AND G3E_FNO IN (11800,15700)'); 
+
+if p_fno=11802

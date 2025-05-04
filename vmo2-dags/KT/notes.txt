@@ -1,0 +1,94 @@
+438:PRC_REVERSE_DATA_CONNECTER
+it requires 3 inputs
+p_fno
+p_dml: delete,insert,update
+P_STATUS:looks at output, if its fail:f,success:s
+-------------------------
+445-483: all variables used in script
+-------------------------
+488
+pkg_data_connector.fun_table_name(p_FNO)
+built in function used for forward to get the temporary table name while passing p_FNO example(TB_123_fiber_splitter)
+v_fno: stores the parent fno else stores p_fno itself
+-------------------------
+489-493:
+child fnos and parent fnos relationship
+parent:12300,child:12301
+-------------------------
+495-497:
+check if temporary_table is null or not, if its null then raise feature is not there
+-------------------------
+498-504
+SYS.USER_TABLES: all the tables where gcomms,iqgeo,oracle tables stored
+check the table that temp_table created by us or not, if yes count as 1 and store value in V_TABLE_CNT
+
+if V_TABLE_CNT is 0 then raise excetion that table not exsits
+-------------------------
+505-509
+from components table we are checking the main table is P_FNO table name and storing in V_MAIN_TABLE
+p:parameter variable
+v:variable
+-------------------------
+510: making the variable null
+-------------------------
+511:528
+checking the v_temp_table_name in SYS.all_tab_columns(all_users) and geting the output of its column_name and table_name in for loop
+
+514-517
+if the column name contains 'VMX_HOUSING','VMX_MANHOLE' then we are storing the corresponding column names in V_COLUMN_IQGEO
+
+519-522
+checking the correspoding column is present in data_mapping table, if its yes then count 1
+
+523-526
+if count 0 then raise exception
+-------------------------
+531
+id: {taking only the number from vmx_ID from the table
+and checking to_number condition, if its not number then throws exception
+example(fiber cable enclosure/270002436 to 270002436)}
+
+vmx_id: complete vmx_id
+
+VMX_CHANGE_TYPE: dml operation we want to particularly perform
+insert,update,delete
+
+vmx_region: only 2 regions in gcomms as of now(gb,ni)
+
+taking the above 3 values from temp_table
+
+cur_vmx_id contains vmx_id,vmx_change_type,vmx_region
+-------------------------
+533-534: assigning two variables
+-------------------------
+535 - 536
+storing the variable values
+V_VMX_ID = vmx_id
+V_IQGO_VMX_ID = id
+V_CHANGE_TYPE=vmx_change_type
+V_REGION=vmx_region
+cur_vmx_id is not found then exit the loop
+-------------------------
+538
+v_fid_cnt=v_vmx_id
+count is 1 when g3e_fid=v_vmx_id
+-------------------------
+540-
+V_CHANGE_TYPE =  'insert'
+
+541: calling the function with arguments
+V_FNO = P_FNO
+V_LTT_ID = P_LTT_ID
+V_JOB_ID = P_LTT_NAME
+
+376: procedure
+V_FNO = P_FNO
+V_LTT_ID = P_LTT_ID
+V_JOB_ID = P_LTT_NAME
+
+384-437:
+inserting the values which are going to modify in gcomms to the table G3E_JOB
+then posting the job, so returns will be v_job_id 
+
+compare the v_job_id with ltt_name in ltt_identifiers table return result ltt_id=p_ltt_id
+

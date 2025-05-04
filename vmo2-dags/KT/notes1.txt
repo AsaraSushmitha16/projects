@@ -1,0 +1,181 @@
+611:PRC_REVERSE_DATA_CONNECTER
+it requires 3 inputs
+p_fno
+p_dml: delete,insert,update
+P_STATUS:looks at output, if its fail:f,success:s
+-------------------------
+618-671: all variables used in script
+-------------------------
+675:
+pkg_data_connector.fun_table_name(p_FNO)
+built in function used for forward to get the temporary table name while passing p_FNO example(TB_123_fiber_splitter)
+v_fno: stores the parent fno else stores p_fno itself
+-------------------------
+676-682:
+child fnos and parent fnos relationship
+parent:12300,child:12301
+-------------------------
+684-685:
+check if temporary_table is null or not, if its null then raise feature is not there
+-------------------------
+687-693
+SYS.USER_TABLES: all the tables where gcomms,iqgeo,oracle tables stored
+check the table that temp_table created by us or not, if yes count as 1 and store value in V_TABLE_CNT
+
+if V_TABLE_CNT is 0 then raise excetion that table not exsits
+-------------------------
+694-698
+from components table we are checking the main table is P_FNO table name and storing in V_MAIN_TABLE
+p:parameter variable
+v:variable
+-------------------------
+699-700: making the variable null
+-------------------------
+701:
+checking the v_temp_table_name in SYS.all_tab_columns(all_users) and geting the output of its column_names and table_name in for loop
+
+704-705:
+if the column name contains 'VMX_HOUSING','VMX_MANHOLE','VMX_IN_STRUCTURE','VMX_IN_EQUIP' then we are storing the corresponding column names in V_COLUMN_IQGEO
+
+706-707:
+if the column name contains 'VMX_OUT_STRUCTURE','VMX_HOUSINGS','VMX_OUT_EQUIP' then we are storing the corresponding column names in V_COLUMN_IQGEO2
+
+708-709:
+if the column name contains 'VMX_N_DUCTS','VMX_CONDUITS' then we are storing the corresponding column names in V_COLUMN_IQGEO3
+
+712-715
+checking the correspoding column is present in data_mapping table, if its yes then count 1
+
+716-719
+if count 0 then raise exception
+-------------------------
+724:
+id: {taking only the number from vmx_ID from the table
+and checking to_number condition, if its not number then throws exception
+example(fiber cable enclosure/270002436 to 270002436)}
+
+vmx_id: complete vmx_id
+
+VMX_CHANGE_TYPE: dml operation we want to particularly perform
+insert,update,delete
+
+vmx_region: only 2 regions in gcomms as of now(gb,ni)
+
+taking the above 3 values from temp_table
+
+cur_vmx_id contains vmx_id,vmx_change_type,vmx_region
+-------------------------
+726-727: assigning two variables
+-------------------------
+728-729:
+storing the variable values
+V_VMX_ID = vmx_id
+V_IQGO_VMX_ID = id
+V_CHANGE_TYPE=vmx_change_type
+V_REGION=vmx_region
+cur_vmx_id is not found then exit the loop
+-------------------------
+731-732:
+if p_FNO in child,find the parent table
+parent table related store in v_vmx_cable
+-------------------------
+734-
+V_CHANGE_TYPE =  'insert'
+
+735: calling the function with arguments
+V_FNO = P_FNO
+V_LTT_ID = P_LTT_ID
+V_JOB_ID = P_LTT_NAME
+
+549: procedure
+V_FNO = P_FNO
+V_LTT_ID = P_LTT_ID
+V_JOB_ID = P_LTT_NAME
+
+557-610:
+inserting the values which are going to modify in gcomms to the table G3E_JOB
+then posting the job, so returns will be v_job_id 
+
+compare the v_job_id with ltt_name in ltt_identifiers table return result ltt_id=p_ltt_id
+
+736-740:
+V_FID_CNT=1 if V_IQGO_VMX_ID is present in GI.IQGEO_FID and g3e_fno=p_FNO
+anyways its V_FID_CNT=0 becoz first time we are inserting
+
+741:check V_FID_CNT is 0 or not
+743-:if 0
+check p_fno is in child
+getting the parent 
+
+761-765:
+if not 0, throws exception that already exist
+
+772-776:
+selecting TC.G3E_TABLE ,TC.IS_MAIN_table,TC.TABLE_ALIAS,G3E_CNO columns from tab_components tables and checking the tables are req for reverse
+
+777-779:
+assigning the variables
+
+781-787:
+selecting all the columns in data_mapping table
+checking the condition g3e_fno=pno, table_name=G3E_TABLE
+column_name not in ('G3E_ID','G3E_FID','G3E_FNO','G3E_CNO')
+
+790-791:
+v_string= storing all the column names except the above columns
+v_null_chk_string= storing all the data_exchange_field not in above values
+
+792-814:
+check the table_level_default value null or not in data mapping table
+if not null: assign the default value in v_String1
+else:
+
+if DATA_EXCHANGE_FIELD='VMX_LOCATION' and p_fno=11800
+DATA_EXCHANGE_FIELD(the value is in wkb format)
+calls the function fun_get_wkb_reverse_11800(DATA_EXCHANGE_FIELD),
+fun_get_wkb_reverse(DATA_EXCHANGE_FIELD)
+and the functions returns SDO_GEOMETRY
+
+else:stores all the columns
+
+818-822:
+if p_no in 7201,7202,7203
+it counts the no of same fids in a csv and store in G3E_CID
+else:
+G3E_CID=1
+
+825:
+v_string stores all the columns as below
+v_string := 'G3E_ID,G3E_FNO,G3E_FID,G3E_CNO,G3E_CID,LTT_ID,vmx_change_type,vmx_region
+
+827: removing , from last of the string v_string and append close bracket instead of comma
+
+828:preparing the insert query
+the entire v_string we are inserting into G3E_TABLE and appending the open bracket
+
+831: adding mandatory column values to the v_string_mand and the sequence of it
+833: removing the extra comma at last of v_string1
+835: adding the select query to the variable v_string1
+select the vmx_location from V_TMP_TABLE_NAME where vmx_ID = V_IQGO_VMX_ID
+
+836:read the v_null_chk_string variable columns and store all the columns in a select statement
+837:needs to check
+
+839:running the command select query result of 837 line(output:vmx_location id) and storing into v_null_Count
+
+837-841:needs to check
+we dont have the code that includes insertion to connections
+
+843: adding the columns v_string_mand to the string v_String1
+
+844-967:rest all detailing
+
+968-969:taking in_equipment and out_equipment from table and storing in V_COLUMN_value,V_COLUMN_value1
+
+971-988: selecting the query which contains mandatory fields and store in v_query
+
+989-990: getting the VMX_MANHOLE from the table and storing in V_COLUMN_value
+
+1189-1209: v_final_query stores the v_region
+v_final_query=v_final_query + v_query
+executing the v_final_query and making v_final_query is null
