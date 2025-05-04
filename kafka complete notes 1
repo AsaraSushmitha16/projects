@@ -949,6 +949,11 @@ PS D:\aa_kafka_python>
 
 
 --------------------------------------------------------------------------------------------------------------------------------------------------------
+IN-DEPTH INTUTION ON TOPIC LOG COMPACTION
+#Kafka stores messages like a file system — topics are like folders, and messages go into files called segments. When a producer sends data very fast, Kafka stores these messages, even if the consumer is slow to read them. By default, messages are kept for 7 days, even after being read. But if the server (broker) has limited memory and the message rate is too high, it can run out of space and crash. To prevent this, we can reduce how long Kafka keeps messages — for example, from 7 days to 1 or 2 days. This setting can be adjusted while creating the topic or from the server configuration. This helps manage memory better and keeps Kafka running smoothly.
+
+--------------------------------------------------------------------------------------------------------------------------------------------------------
+
 "Schema registry"
 
 the producer produces the message and consumer consumes the messages
