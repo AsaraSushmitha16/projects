@@ -1,0 +1,174 @@
+ok so i will you my project flow, and tasks to you can you give the script,description etc 
+so i will tell the same thing to the interviewer in a clear way
+source(entertainment,connectivity)
+
+will insert the source data into kafka topic via flume,kafka mirror maker,filebeat
+then input kafka topic contains (semi structured)
+then from kafka input topic for processing it will go to spark
+from spark it will go to kafka output topic
+then from kafka output topic it will go to log trash or log stash
+from log trash->elastic search->kibana
+from log stash->graphite->grafana
+
+tasks:
+
+1. Real-Time Data Ingestion from Kafka
+Task: Ingest semi-structured data from Kafka topics into Spark for real-time processing.
+
+Description: Show how you used Spark Structured Streaming to consume messages from Kafka topics and process them in near real-time.
+
+Tech: Kafka, Spark Structured Streaming.
+Objective: Process data from Kafka in near real-time using Spark.
+
+Implementation:
+df_raw = spark.readStream \
+    .format("kafka") \
+    .option("kafka.bootstrap.servers", "localhost:9092") \
+    .option("subscribe", "input_topic") \
+    .load()
+
+df_parsed = df_raw.selectExpr("CAST(value AS STRING) as json").select(from_json("json", schema).alias("data")).select("data.*")
+
+Outcome: Spark reads from Kafka seamlessly in a fault-tolerant and scalable manner
+
+2. Data Transformation with Spark SQL
+Task: Perform complex data transformations using Spark SQL.
+
+Description: Demonstrate how you’ve transformed the incoming Kafka data by applying filters, aggregations, and joins to get meaningful insights.
+
+Tech: Spark SQL, DataFrames.
+Objective: Apply transformations like filters, joins, and aggregations.
+transformed_df = df_parsed.filter("status == 'ERROR'").groupBy("source").agg(count("*").alias("error_count"))
+Joins Example:
+transformed_df = df_parsed.join(dim_df, "device_id", "left")
+
+Outcome: Clean and aggregated insights on error trends per source.
+
+3. Fault Tolerant Stream Processing
+Task: Handle data inconsistencies and ensure fault tolerance in streaming data.
+
+Description: Showcase how you used checkpointing and write-ahead logs (WAL) in Spark Structured Streaming to ensure that your pipeline can recover from failures without data loss.
+
+Tech: Spark Structured Streaming, Checkpointing.
+Objective: Ensure the pipeline recovers from crashes and restarts safely.
+query = transformed_df.writeStream \
+    .format("kafka") \
+    .option("kafka.bootstrap.servers", "localhost:9092") \
+    .option("topic", "output_topic") \
+    .option("checkpointLocation", "/user/checkpoints/logstream") \
+    .start()
+
+Mechanism: Spark checkpointing ensures no data is lost between micro-batches.
+
+
+4. Optimizing Spark Jobs for Performance
+Task: Improve the performance of your Spark jobs.
+
+Description: Discuss how you optimized Spark jobs, such as choosing the right partitioning strategy, using broadcast joins, or configuring memory management to process large volumes of data efficiently.
+
+Tech: Spark Partitioning, Broadcast Joins, Memory Tuning.
+Broadcast Join Example:
+from pyspark.sql.functions import broadcast
+transformed_df = df_parsed.join(broadcast(dim_df), "device_id")
+
+Tuning Configs:
+spark.conf.set("spark.sql.shuffle.partitions", "100")
+spark.conf.set("spark.executor.memory", "4g")
+Result: 40% reduction in execution time and improved job stability.
+
+“I worked on a real-time log analytics pipeline where we ingested semi-structured data from various 
+sources like entertainment and connectivity using Kafka (with Flume/Filebeat). 
+Spark Structured Streaming processed the data in real time and pushed it back to Kafka, 
+from where it was visualized using Kibana and Grafana. 
+I was responsible for setting up fault-tolerant Spark jobs,optimizing Spark performance 
+using broadcast joins and dynamic partitioning.”
+
+==============================================================================================================
+kafka:
+1) Task 1: Created and Managed Kafka Topics
+"Created and managed Kafka topics with proper partitioning 
+and replication factor based on message volume and fault tolerance requirements."
+
+Example: Set up 6 partitions for high-volume topics and 2 for low-volume ones.
+
+Tools: Kafka CLI
+
+2) Task 2: Developed Kafka Producers and Consumers in Python
+"Wrote Python Kafka producers and consumers using kafka-python to handle streaming data, 
+with support for custom serialization and configuration-driven architecture."
+
+Example: JSON config used for bootstrap servers, retries, acks, etc.
+3)Managed Producer and Consumer Groups
+"Handled Kafka consumer groups for different applications to ensure parallel processing, fault-tolerant consumption, and offset management."
+
+Example: Used different consumer groups per module to allow independent scaling.
+Task: Configure Kafka for high availability and data durability.
+
+Description:
+
+Set replication factor = 2 to ensure data is not lost if one broker fails.
+
+Enabled log retention and set offsets to latest or earliest based on use case.
+
+Enabled topic-level acks for exactly-once delivery in producer config.
+Kafka Config:
+acks=all
+enable.idempotence=true
+log.retention.hours=72
+4)Task 4: Monitored Kafka Topic Lag and Message Flow
+"Regularly monitored Kafka topic lag using CLI commands and logs to ensure consumer groups 
+were processing data in real-time."
+
+Example: Used kafka-consumer-groups.sh to check lag and take action if needed.
+----------------------------------------------------------------------------------------
+1. Developed and Managed Airflow DAGs for Data Migration Workflows
+Created separate DAGs for forward, CDC, and reverse migrations between GComms and IQGeo.
+
+Scheduled DAGs to trigger daily or on demand depending on the migration type.
+
+Implemented task-level retries, dependency handling, and failure alerts.
+
+2. CSV File Generation and Delivery Pipeline
+Used Python operators within Airflow to export transformed data into CSV format.
+
+Ensured correct schema mapping and encoding standards.
+
+Enabled scalable CSV generation for large datasets (e.g., 10 lakh+ rows).
+
+3. Automated GCS Integration via Cloud Functions
+Designed event-based Cloud Functions to trigger when CSVs were placed in Google Cloud Storage.
+
+Cloud Function logic parsed CSV content and loaded it into appropriate BigQuery tables.
+
+Handled edge cases like malformed rows, duplicates, or schema mismatches.
+
+4. Implemented Data Validation and Auto-Recovery Mechanism
+DAG called a PL/SQL-based validation procedure to compare source vs. target row counts.
+
+On mismatch, Airflow automatically retriggered failed subsets for reprocessing.
+
+Ensured end-to-end data integrity even for partial migrations.
+
+5. Email-Based Operational Reporting
+Integrated Airflow EmailOperator to send automated reports on migration runs.
+
+Included record counts, time taken, failure summary, and failure CSV attachments.
+
+Made it easy for stakeholders to monitor progress without accessing Airflow UI.
+
+----------------------------------------------------------------------------------------
+5 Interview-Ready Tasks from Hive to BigQuery Migration Project
+1. Performed Source-to-Target Data Lineage Analysis
+Analyzed legacy Hive-based pipelines to identify source and target tables by tracing the data flow across Pig, Spark, Python, and Java scripts. Documented the lineage and dependencies to prepare for smooth migration to BigQuery.
+
+2. Conducted Code Analysis for SQL and UDF Patterns
+Reviewed HQL scripts and supporting components to determine complexity. Identified custom UDFs, nested queries, joins, and transformation patterns to plan the appropriate migration strategy and tool usage.
+
+3. Converted Hive Code to BigQuery SQL Using Migration Tools
+Used DMPro (with BQMS) to auto-convert HQL to BigQuery SQL. Applied CodeMaverick to optimize queries and manually refactor complex patterns not supported by auto-conversion.
+
+4. Scheduled and Tested Jobs Using DALM
+Scheduled converted BigQuery pipelines using DALM. Performed dry-run executions to validate syntax and configuration, followed by wet-runs using actual data to verify end-to-end job success.
+
+5. Validated Data Quality Between Hive and BigQuery
+Compared Hive and BigQuery results by checking record counts, aggregations, null values, and business logic consistency. Logged discrepancies and ensured successful migration through multiple validation cycles.
