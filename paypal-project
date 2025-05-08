@@ -1,0 +1,105 @@
+currently using dalm for scheduling
+
+workflow:
+1) biz day-> sets environment variables
+splits this job as bash component or bq component
+variables are already set in uc4, writing back values to variables for further usage
+
+2) data_check job(bash job) -> checks whether data available in source systems
+checks the target table is having order is crct or not, inline with latest schedule
+
+3) listener job(if upstream dependency) →
+dependency job is completed run, whether data came so that data can be used in downstream jobs
+this job will present if the listener job is dependency with other job plan
+
+4,5) incremental job & full snapshot job->
+consume source data -> build a dataset for target table -> achieved data is inserted in target table
+if this both jobs contain sh files...this inside sh file calls sql files... that sql files data is written into target table
+
+6,7) export, import jobs ->>
+currently target table created by incremental, snapshot jobs are stored in hive 
+so moving only target table to gcp makes import, export jobs creation
+hive ->data stored in file system ->file system then copied to gcp-> read file system and write to bo
+since we using complete wf to gcp...no need to export, import jobs
+
+8) merge job ->>
+before migration-> reading from hive and writing to hive(import and export jobs are needed)
+after migration ->reading from bq and writing from bq
+
+this job contains final target table
+9) update and done job(dependency with some other job plans) ->
+confirmation given to downstream by creating a done file in destination folders
+---------------------------------------------
+SOURCE:
+oishadoop-ss_table_view->source
+
+INTERMITTENT:
+cipds-lvs_exit_poc->pp_stages
+
+TARGET:
+edw-->bods
+pypl-edw->production dataset
+pypl-bods ->dataset for research purpose
+---------------------------------------------
+edw-->created by paypal(complience, regulatory, gss cases)
+bods->created by prodapt
+ hive (source) -> edw(target)
+
+oishadoop -> source for incremental and snapshot
+
+|(both jobs output stored in)
+cipds (hadoop) ->used as a temporary tables
+|output
+pypl.edw
+
+5 steps:
+1 lineage
+where we will analyse ur code and understand what is source and target
+2 code analysis
+to understand whether it involves sqls, pattern of udfs
+3 conversions
+for hql and sql conversion tool is dmpro which uses bqms
+for hql and sql optimization we use codemaverick
+for other patterns we use codemaverick
+4: scheduling
+converted code is scheduled using dalm tool
+dry-run in dalm to test syntax are correct or not
+wet-run with available data
+5) validation
+
+datawarehouse
+pyspark -> few functions
+spark concepts
+kafka concepts 
+airflow few dags
+python,oops
+numpy and pandas
+sql queries
+rdbms concepts
+gcp 
+genai concepts
+system design
+
+sdlc concepts
+git
+kubernetes
+
+Spark - mostly on how to configure compute , performance tuning , 
+handling large datasets, shuffling , joins , aggregations etc
+
+modes:
+fail fest
+dropmal formed
+permissive
+
+rewise:
+pyspark -> few functions
+spark concepts
+kafka concepts 
+airflow few dags
+rdbms concepts
+and tasks:
+
+how to configure compute
+interview in jp morgan answer i need for interview
+can you give me with code each
