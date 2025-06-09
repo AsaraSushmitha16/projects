@@ -1,0 +1,351 @@
+Received: from PN4P287MB4313.INDP287.PROD.OUTLOOK.COM (2603:1096:c01:2a4::6)
+ by PN0P287MB1346.INDP287.PROD.OUTLOOK.COM with HTTPS; Fri, 6 Jun 2025
+ 14:18:55 +0000
+Received: from PN2PPFF66CE47A4.INDP287.PROD.OUTLOOK.COM (2603:1096:c04:1::15c)
+ by PN4P287MB4313.INDP287.PROD.OUTLOOK.COM (2603:1096:c01:2a4::6) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8813.22; Fri, 6 Jun
+ 2025 14:18:52 +0000
+Received: from PN2PPFF66CE47A4.INDP287.PROD.OUTLOOK.COM
+ ([fe80::8203:e01f:353c:45f8]) by PN2PPFF66CE47A4.INDP287.PROD.OUTLOOK.COM
+ ([fe80::8203:e01f:353c:45f8%6]) with mapi id 15.20.8813.022; Fri, 6 Jun 2025
+ 14:18:52 +0000
+From: Bhaskar Adusumalli <bhaskar.a@prodapt.com>
+To: Asara Sushmitha <sushmitha.a@prodapt.com>
+CC: Priyadharsini J <priyadharsini.j@prodapt.com>, Devibala Rajan Devar
+	<devibala.r@prodapt.com>
+Subject: RE: Formal Resignation - Asara Sushmitha [17958]
+Thread-Topic: Formal Resignation - Asara Sushmitha [17958]
+Thread-Index: AQHb0e/fjBU0VNS1kUqtVnViXz8ZSrP2E/xFgAAiVkA=
+Date: Fri, 6 Jun 2025 14:18:52 +0000
+Message-ID:
+	<PN2PPFF66CE47A4B0378BC7800D1D0048D8F66EA@PN2PPFF66CE47A4.INDP287.PROD.OUTLOOK.COM>
+References:
+	<PN0P287MB1346A60D43F481846DBE0AF0F260A@PN0P287MB1346.INDP287.PROD.OUTLOOK.COM>
+ <PN0P287MB13461E58257A0E5385DACAD6F26EA@PN0P287MB1346.INDP287.PROD.OUTLOOK.COM>
+In-Reply-To:
+	<PN0P287MB13461E58257A0E5385DACAD6F26EA@PN0P287MB1346.INDP287.PROD.OUTLOOK.COM>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Exchange-Organization-AuthAs: Internal
+X-MS-Exchange-Organization-AuthMechanism: 04
+X-MS-Exchange-Organization-AuthSource:
+	PN2PPFF66CE47A4.INDP287.PROD.OUTLOOK.COM
+X-MS-Has-Attach:
+X-MS-Exchange-Organization-Network-Message-Id:
+	9a33de2c-e6d1-47da-68ba-08dda5051087
+X-MS-Exchange-Organization-SCL: 1
+X-MS-TNEF-Correlator:
+X-MS-Exchange-Organization-RecordReviewCfmType: 0
+msip_labels:
+x-ms-publictraffictype: Email
+x-ms-exchange-crosstenant-id: b85de5b8-3fd3-4b20-9328-0d268db1282f
+dlp-product: dlpe-windows
+dlp-version: 11.11.2.117
+dlp-reaction: no-action
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=prodapt.com;
+x-forefront-antispam-report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PN2PPFF66CE47A4.INDP287.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(13230040)(39142699007)(366016)(69100299015)(31052699007)(7053199007)(8096899003)(13003099007)(41050700001);DIR:INT;
+x-ms-office365-filtering-correlation-id: 9a33de2c-e6d1-47da-68ba-08dda5051087
+x-microsoft-antispam:
+	BCL:0;ARA:13230040|39142699007|366016|69100299015|31052699007|7053199007|8096899003|13003099007|41050700001;
+x-ms-traffictypediagnostic:
+	PN2PPFF66CE47A4:EE_|PN4P287MB4313:EE_|PN0P287MB1346:EE_
+x-ms-exchange-crosstenant-originalarrivaltime: 06 Jun 2025 14:18:52.6752 (UTC)
+x-ms-exchange-crosstenant-fromentityheader: Hosted
+x-ms-exchange-transport-crosstenantheadersstamped: PN4P287MB4313
+x-ms-exchange-transport-endtoendlatency: 00:00:02.6205765
+x-ms-exchange-crosstenant-network-message-id:
+	9a33de2c-e6d1-47da-68ba-08dda5051087
+x-ms-exchange-processed-by-bccfoldering: 15.20.8813.020
+x-ms-exchange-atpmessageproperties: SA
+x-ms-exchange-crosstenant-authas: Internal
+x-ms-exchange-crosstenant-authsource: PN2PPFF66CE47A4.INDP287.PROD.OUTLOOK.COM
+x-ms-exchange-crosstenant-mailboxtype: HOSTED
+x-ms-exchange-crosstenant-userprincipalname:
+	x4HZeNqi3hOU4CODNfO9eF5FeLfsYRRUN7s0XRuKW4S2D9KBbBaRgJ6CXx1604Ck3a1dPNx3lRJ2B+H9f3ptBA==
+X-Microsoft-Antispam-Mailbox-Delivery:
+	ucf:0;jmr:0;auth:0;dest:I;ENG:(910005)(944506478)(944626604)(920097)(425001)(930097)(140003);
+X-Microsoft-Antispam-Message-Info:
+	/e8xm4k6T0jY5bjza378bSC6Nmy2Sv/JbyT9zppnhZKDSJceofdlgWSl162Xa1z0qk9im9dnDg7QygfHuK0foQcdMkPm+Zv8l0AWsr8EA7wRfrbD9WKImgWBhzMnQxQYHqW9zvMt1DJfLmUWd8AoIUINBZpMBGCdX42HuBgkvMkFeeK+Zdq4Hm8VWeGl2qtWZXyD05wDM0cxJdVymESk1sRSA+yTNuv9WrgU/bYkXZ74AJeEQrKsuwnj7KatRg1fqfXlQUTyXLI5+5e0bwylx6Fa5SpJZwCAjQVThvE9CB5wmx7r9SIbW6Qnj7GZcZ/3PTB0UVKL71d/orP261mRh1CmHMs/ADuWnagZnJhmuYI4+shsApv9+Jg34eXL6ENG2DZLNXtpEmbRx0iPvyVmkAj5rL9czwG3thf8mJgUmK4+tVPnXTQZWD3dSjZ8zLatP8F9NUrHEqR7P2IE/SGI5rGvgbstbA/hYwDqQXOFPKctC0oLOl7tFhCLOB1PywdGkX7RNl1qKb3Kr/1dQgTueaBVguT0Yxl0ZjIGolS78RaZzP26SatzV+h0yRVnpiCmdcQyV0rCnz34bj6DuVNoWNIPfoVYTzx3YEGJiS3E/DYY0ELw6tnjSoMBJJIjhqmNAItz3OgmR0edfdEynN6k0ILX4Q8vPxfmYddSTwVWQYJtLTkXe25b0qe3Bu0WzMlZBzuvaIB9b4x7IBEue8vQL9mmrmvrfggfCHl2CEwY5Td/ABTz+vric70D/ZnP5WGAVhK87FJWXIYPqN+s2MvCikXdlHFohzeTLiwa1jg3uQU=
+Content-Type: multipart/alternative;
+	boundary="_000_PN2PPFF66CE47A4B0378BC7800D1D0048D8F66EAPN2PPFF66CE47A4_"
+MIME-Version: 1.0
+
+--_000_PN2PPFF66CE47A4B0378BC7800D1D0048D8F66EAPN2PPFF66CE47A4_
+Content-Type: text/plain; charset="us-ascii"
+
+Hi Sushmitha,
+
+We are good to release on 30th July 2025.
+Pls try to close all the dependency tasks & handovers.
+
+Thanks!!
+Regards,
+
+Bhaskar Adusumalli
+Senior Project Manager - CAD
++91 9740877885
+
+Website<https://www.prodapt.com> | LinkedIn<https://www.linkedin.com/company/prodaptsolutions/> | Twitter<https://twitter.com/Prodapt/> | Instagram<https://instagram.com/prodaptsolutions> | Facebook<https://www.facebook.com/Prodapt/> | Youtube<https://www.youtube.com/channel/UCBUpdnAwhK3yJ8oe7vxkW7A>
+[https://mcusercontent.com/95db29823488a11cb82f0c14e/images/9fd036a2-653f-f1fa-b197-063ac669e9e5.png]<https://www.prodapt.com/>
+
+
+From: Asara Sushmitha <sushmitha.a@prodapt.com>
+Sent: 06 June 2025 17:41
+To: Bhaskar Adusumalli <bhaskar.a@prodapt.com>; Devibala Rajan Devar <devibala.r@prodapt.com>
+Cc: Priyadharsini J <priyadharsini.j@prodapt.com>
+Subject: Re: Formal Resignation - Asara Sushmitha [17958]
+
+Dear @Bhaskar Adusumalli<mailto:bhaskar.a@prodapt.com>,
+
+Thank you for the confirmation.
+
+As discussed, I would like to confirm that my last working day will be July 30,2025. I will ensure that all my responsibilities are transitioned smoothly and will complete any required handover documentation before my departure.
+
+Please let me know if there are any additional formalities or steps needed from my side.
+
+Thank you once again for your support.
+
+Warm regards,
+Asara Sushmitha
+Emp id: 17958.
+
+________________________________
+From: Asara Sushmitha
+Sent: Saturday, May 31, 2025 11:33 AM
+To: Bhaskar Adusumalli <bhaskar.a@prodapt.com<mailto:bhaskar.a@prodapt.com>>; Devibala Rajan Devar <devibala.r@prodapt.com<mailto:devibala.r@prodapt.com>>
+Cc: Priyadharsini J <priyadharsini.j@prodapt.com<mailto:priyadharsini.j@prodapt.com>>
+Subject: Formal Resignation - Asara Sushmitha [17958]
+
+Dear @Bhaskar Adusumalli<mailto:bhaskar.a@prodapt.com> and @Devibala Rajan Devar<mailto:devibala.r@prodapt.com>,
+
+I hope you are doing well. I am writing to formally submit my resignation from my position as software engineer. This decision was not easy, as I am truly grateful for the opportunities, support, and experiences I have gained during my time here. I have learned a lot under your guidance and sincerely appreciate the encouragement and trust you placed in me.
+
+Please let me know how I can ensure a smooth transition during my notice period. I am committed to completing all pending tasks and assisting in any handover process as needed.
+
+Thank you once again for everything. I wish you and the team continued success.
+
+Warm regards,
+Asara Sushmitha,
+Emp id: 17958.
+
+
+--_000_PN2PPFF66CE47A4B0378BC7800D1D0048D8F66EAPN2PPFF66CE47A4_
+Content-Type: text/html; charset="us-ascii"
+
+<html xmlns:v="urn:schemas-microsoft-com:vml" xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:w="urn:schemas-microsoft-com:office:word" xmlns:m="http://schemas.microsoft.com/office/2004/12/omml" xmlns="http://www.w3.org/TR/REC-html40">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=us-ascii">
+<meta name="Generator" content="Microsoft Word 15 (filtered medium)">
+<!--[if !mso]><style>v\:* {behavior:url(#default#VML);}
+o\:* {behavior:url(#default#VML);}
+w\:* {behavior:url(#default#VML);}
+.shape {behavior:url(#default#VML);}
+</style><![endif]--><style><!--
+/* Font Definitions */
+@font-face
+	{font-family:"Cambria Math";
+	panose-1:2 4 5 3 5 4 6 3 2 4;}
+@font-face
+	{font-family:Calibri;
+	panose-1:2 15 5 2 2 2 4 3 2 4;}
+@font-face
+	{font-family:Aptos;}
+@font-face
+	{font-family:"KareliaWeb Regular";
+	panose-1:0 0 5 0 0 0 0 0 0 0;}
+/* Style Definitions */
+p.MsoNormal, li.MsoNormal, div.MsoNormal
+	{margin:0cm;
+	font-size:12.0pt;
+	font-family:"Aptos",sans-serif;}
+a:link, span.MsoHyperlink
+	{mso-style-priority:99;
+	color:blue;
+	text-decoration:underline;}
+span.EmailStyle21
+	{mso-style-type:personal-reply;
+	font-family:"KareliaWeb Regular";
+	color:windowtext;}
+.MsoChpDefault
+	{mso-style-type:export-only;
+	font-size:10.0pt;
+	mso-ligatures:none;}
+@page WordSection1
+	{size:612.0pt 792.0pt;
+	margin:72.0pt 72.0pt 72.0pt 72.0pt;}
+div.WordSection1
+	{page:WordSection1;}
+--></style><!--[if gte mso 9]><xml>
+<o:shapedefaults v:ext="edit" spidmax="1026" />
+</xml><![endif]--><!--[if gte mso 9]><xml>
+<o:shapelayout v:ext="edit">
+<o:idmap v:ext="edit" data="1" />
+</o:shapelayout></xml><![endif]-->
+</head>
+<body lang="EN-IN" link="blue" vlink="purple" style="word-wrap:break-word">
+<div class="WordSection1">
+<p class="MsoNormal"><span style="font-size:11.0pt;font-family:&quot;KareliaWeb Regular&quot;;mso-fareast-language:EN-US">Hi Sushmitha,<o:p></o:p></span></p>
+<p class="MsoNormal"><span style="font-size:11.0pt;font-family:&quot;KareliaWeb Regular&quot;;mso-fareast-language:EN-US"><o:p>&nbsp;</o:p></span></p>
+<p class="MsoNormal"><span style="font-size:11.0pt;font-family:&quot;KareliaWeb Regular&quot;;mso-fareast-language:EN-US">We are good to release on 30<sup>th</sup> July 2025.<o:p></o:p></span></p>
+<p class="MsoNormal"><span style="font-size:11.0pt;font-family:&quot;KareliaWeb Regular&quot;;mso-fareast-language:EN-US">Pls try to close all the dependency tasks &amp; handovers.<o:p></o:p></span></p>
+<p class="MsoNormal"><span style="font-size:11.0pt;font-family:&quot;KareliaWeb Regular&quot;;mso-fareast-language:EN-US"><o:p>&nbsp;</o:p></span></p>
+<p class="MsoNormal"><span style="font-size:11.0pt;font-family:&quot;KareliaWeb Regular&quot;;mso-fareast-language:EN-US">Thanks!!<o:p></o:p></span></p>
+<div>
+<div>
+<div style="margin-left:5.0pt;margin-top:5.0pt;margin-right:5.0pt;margin-bottom:5.0pt">
+<table class="MsoNormalTable" border="0" cellspacing="0" cellpadding="0" width="350" style="width:262.5pt;background:white;border-collapse:collapse">
+<tbody>
+<tr>
+<td valign="top" style="padding:6.75pt .75pt .75pt .75pt">
+<table class="MsoNormalTable" border="0" cellspacing="0" cellpadding="0" width="100%" style="width:100.0%;border-collapse:collapse">
+<tbody>
+<tr>
+<td style="padding:.75pt .75pt 7.5pt .75pt">
+<p class="MsoNormal"><span style="font-size:11.0pt;font-family:&quot;KareliaWeb Regular&quot;;color:#1C1C1C">Regards,<o:p></o:p></span></p>
+<p class="MsoNormal"><span style="font-size:7.5pt;font-family:&quot;KareliaWeb Regular&quot;;color:#1C1C1C">&nbsp;<o:p></o:p></span></p>
+<p class="MsoNormal"><b><span style="font-family:&quot;KareliaWeb Regular&quot;;color:#EB262A">Bhaskar Adusumalli</span></b><span style="font-family:&quot;KareliaWeb Regular&quot;;color:#EB262A"><o:p></o:p></span></p>
+<p class="MsoNormal"><span style="font-size:11.0pt;font-family:&quot;KareliaWeb Regular&quot;;color:#1C1C1C">Senior Project Manager - CAD<o:p></o:p></span></p>
+<p class="MsoNormal"><span style="font-size:10.0pt;font-family:&quot;KareliaWeb Regular&quot;;color:#1C1C1C">+91 9740877885<o:p></o:p></span></p>
+</td>
+</tr>
+</tbody>
+</table>
+<p class="MsoNormal"><span style="display:none"><o:p>&nbsp;</o:p></span></p>
+<table class="MsoNormalTable" border="1" cellspacing="0" cellpadding="0" style="border-collapse:collapse;border:none">
+<tbody>
+<tr>
+<td style="border:none;border-top:solid #EB262A 1.0pt;padding:4.5pt .75pt .75pt .75pt">
+<p class="MsoNormal"><u><span style="font-size:10.0pt;font-family:&quot;KareliaWeb Regular&quot;;color:#EB262A"><a href="https://www.prodapt.com" target="_blank"><span style="color:#EB262A">Website</span></a></span></u><span style="font-size:10.0pt;font-family:&quot;KareliaWeb Regular&quot;;color:black">&nbsp;|&nbsp;</span><u><span style="font-size:10.0pt;font-family:&quot;KareliaWeb Regular&quot;;color:#EB262A"><a href="https://www.linkedin.com/company/prodaptsolutions/" target="_blank"><span style="color:#EB262A">LinkedIn</span></a></span></u><span style="font-size:10.0pt;font-family:&quot;KareliaWeb Regular&quot;;color:black">&nbsp;|&nbsp;</span><u><span style="font-size:10.0pt;font-family:&quot;KareliaWeb Regular&quot;;color:#EB262A"><a href="https://twitter.com/Prodapt/" target="_blank"><span style="color:#EB262A">Twitter</span></a></span></u><span style="font-size:10.0pt;font-family:&quot;KareliaWeb Regular&quot;;color:black">&nbsp;|&nbsp;</span><u><span style="font-size:10.0pt;font-family:&quot;KareliaWeb Regular&quot;;color:#EB262A"><a href="https://instagram.com/prodaptsolutions" target="_blank"><span style="color:#EB262A">Instagram</span></a></span></u><span style="font-size:10.0pt;font-family:&quot;KareliaWeb Regular&quot;;color:black">&nbsp;|&nbsp;</span><u><span style="font-size:10.0pt;font-family:&quot;KareliaWeb Regular&quot;;color:#EB262A"><a href="https://www.facebook.com/Prodapt/" target="_blank"><span style="color:#EB262A">Facebook</span></a></span></u><span style="font-size:10.0pt;font-family:&quot;KareliaWeb Regular&quot;;color:black">&nbsp;|&nbsp;</span><u><span style="font-size:10.0pt;font-family:&quot;KareliaWeb Regular&quot;;color:#EB262A"><a href="https://www.youtube.com/channel/UCBUpdnAwhK3yJ8oe7vxkW7A" target="_blank"><span style="color:#EB262A">Youtube</span></a></span></u><span style="font-size:10.0pt;font-family:&quot;KareliaWeb Regular&quot;"><o:p></o:p></span></p>
+</td>
+</tr>
+<tr>
+<td width="400" style="width:300.0pt;border:none;padding:7.5pt .75pt .75pt .75pt">
+<p class="MsoNormal"><a href="https://www.prodapt.com/" target="_blank"><span style="font-size:10.0pt;font-family:&quot;Calibri&quot;,sans-serif;text-decoration:none"><img border="0" width="296" height="73" style="width:3.0833in;height:.7604in" id="_x0000_i1026" src="https://mcusercontent.com/95db29823488a11cb82f0c14e/images/9fd036a2-653f-f1fa-b197-063ac669e9e5.png"></span></a><o:p></o:p></p>
+</td>
+</tr>
+</tbody>
+</table>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p class="MsoNormal" style="background:white"><span style="font-size:11.0pt;font-family:&quot;Calibri&quot;,sans-serif;color:black">&nbsp;</span><span style="font-size:11.0pt;font-family:&quot;Calibri&quot;,sans-serif"><o:p></o:p></span></p>
+</div>
+</div>
+<p class="MsoNormal"><span style="font-size:11.0pt;font-family:&quot;KareliaWeb Regular&quot;;mso-fareast-language:EN-US"><o:p>&nbsp;</o:p></span></p>
+<div>
+<div style="border:none;border-top:solid #E1E1E1 1.0pt;padding:3.0pt 0cm 0cm 0cm">
+<p class="MsoNormal"><b><span lang="EN-US" style="font-size:11.0pt;font-family:&quot;Calibri&quot;,sans-serif">From:</span></b><span lang="EN-US" style="font-size:11.0pt;font-family:&quot;Calibri&quot;,sans-serif"> Asara Sushmitha &lt;sushmitha.a@prodapt.com&gt;
+<br>
+<b>Sent:</b> 06 June 2025 17:41<br>
+<b>To:</b> Bhaskar Adusumalli &lt;bhaskar.a@prodapt.com&gt;; Devibala Rajan Devar &lt;devibala.r@prodapt.com&gt;<br>
+<b>Cc:</b> Priyadharsini J &lt;priyadharsini.j@prodapt.com&gt;<br>
+<b>Subject:</b> Re: Formal Resignation - Asara Sushmitha [17958]<o:p></o:p></span></p>
+</div>
+</div>
+<p class="MsoNormal"><o:p>&nbsp;</o:p></p>
+<div>
+<p class="MsoNormal" style="line-height:18.0pt"><span style="color:black">Dear <a id="OWAAM718819" href="mailto:bhaskar.a@prodapt.com">
+<span style="font-family:&quot;Aptos&quot;,sans-serif;text-decoration:none">@Bhaskar Adusumalli</span></a>,<o:p></o:p></span></p>
+</div>
+<div>
+<p class="MsoNormal" style="line-height:18.0pt"><span style="color:black"><o:p>&nbsp;</o:p></span></p>
+</div>
+<div>
+<p class="MsoNormal" style="line-height:18.0pt"><span style="color:black">Thank you for the confirmation.<o:p></o:p></span></p>
+</div>
+<div>
+<p class="MsoNormal" style="line-height:18.0pt"><span style="color:black"><o:p>&nbsp;</o:p></span></p>
+</div>
+<div>
+<p class="MsoNormal" style="line-height:18.0pt"><span style="color:black">As discussed, I would like to confirm that my last working day will be July 30,2025. I will ensure that all my responsibilities are transitioned smoothly and will complete any required
+ handover documentation before my departure.<o:p></o:p></span></p>
+</div>
+<div>
+<p class="MsoNormal" style="line-height:18.0pt"><span style="color:black"><o:p>&nbsp;</o:p></span></p>
+</div>
+<div>
+<p class="MsoNormal" style="line-height:18.0pt"><span style="color:black">Please let me know if there are any additional formalities or steps needed from my side.<o:p></o:p></span></p>
+</div>
+<div>
+<p class="MsoNormal" style="line-height:18.0pt"><span style="color:black"><o:p>&nbsp;</o:p></span></p>
+</div>
+<div>
+<p class="MsoNormal" style="line-height:18.0pt"><span style="color:black">Thank you once again for your support.<o:p></o:p></span></p>
+</div>
+<div>
+<p class="MsoNormal" style="line-height:18.0pt"><span style="color:black"><o:p>&nbsp;</o:p></span></p>
+</div>
+<div>
+<p class="MsoNormal" style="line-height:18.0pt"><span style="color:black">Warm regards,<o:p></o:p></span></p>
+</div>
+<div>
+<p class="MsoNormal" style="line-height:18.0pt"><span style="color:black">Asara Sushmitha<o:p></o:p></span></p>
+</div>
+<div>
+<p class="MsoNormal" style="line-height:18.0pt"><span style="color:black">Emp id: 17958.<o:p></o:p></span></p>
+</div>
+<div>
+<p class="MsoNormal"><span style="color:black"><o:p>&nbsp;</o:p></span></p>
+</div>
+<div class="MsoNormal" align="center" style="text-align:center">
+<hr size="2" width="98%" align="center">
+</div>
+<div id="divRplyFwdMsg">
+<p class="MsoNormal"><b><span style="font-size:11.0pt;font-family:&quot;Calibri&quot;,sans-serif;color:black">From:</span></b><span style="font-size:11.0pt;font-family:&quot;Calibri&quot;,sans-serif;color:black"> Asara Sushmitha<br>
+<b>Sent:</b> Saturday, May 31, 2025 11:33 AM<br>
+<b>To:</b> Bhaskar Adusumalli &lt;<a href="mailto:bhaskar.a@prodapt.com">bhaskar.a@prodapt.com</a>&gt;; Devibala Rajan Devar &lt;<a href="mailto:devibala.r@prodapt.com">devibala.r@prodapt.com</a>&gt;<br>
+<b>Cc:</b> Priyadharsini J &lt;<a href="mailto:priyadharsini.j@prodapt.com">priyadharsini.j@prodapt.com</a>&gt;<br>
+<b>Subject:</b> Formal Resignation - Asara Sushmitha [17958]</span> <o:p></o:p></p>
+<div>
+<p class="MsoNormal">&nbsp;<o:p></o:p></p>
+</div>
+</div>
+<div>
+<div>
+<p class="MsoNormal" style="line-height:18.0pt"><span style="color:black">Dear <a id="OWAAM663712" href="mailto:bhaskar.a@prodapt.com">
+<span style="font-family:&quot;Aptos&quot;,sans-serif;text-decoration:none">@Bhaskar Adusumalli</span></a>&nbsp;and
+<a id="OWAAM357473" href="mailto:devibala.r@prodapt.com"><span style="font-family:&quot;Aptos&quot;,sans-serif;text-decoration:none">@Devibala Rajan Devar</span></a>,<o:p></o:p></span></p>
+</div>
+<div>
+<p class="MsoNormal" style="line-height:18.0pt"><span style="color:black"><br>
+I hope you are doing well. I am writing to formally submit my resignation from my&nbsp;position as software engineer. This decision was not easy, as I am truly grateful for the opportunities, support, and experiences I have gained during my time here. I have learned
+ a lot under your guidance and sincerely&nbsp;appreciate the encouragement and trust you placed in me.<o:p></o:p></span></p>
+</div>
+<div>
+<p class="MsoNormal" style="line-height:18.0pt"><span style="color:black"><o:p>&nbsp;</o:p></span></p>
+</div>
+<div>
+<p class="MsoNormal" style="line-height:18.0pt"><span style="color:black">Please let me know how I can ensure a smooth transition during my notice period. I am committed to completing all pending tasks and assisting in any handover process as needed.<o:p></o:p></span></p>
+</div>
+<div>
+<p class="MsoNormal" style="line-height:18.0pt"><span style="color:black"><o:p>&nbsp;</o:p></span></p>
+</div>
+<div>
+<p class="MsoNormal" style="line-height:18.0pt"><span style="color:black">Thank you once again for everything. I wish you and the team continued success.<o:p></o:p></span></p>
+</div>
+<div>
+<p class="MsoNormal" style="line-height:18.0pt"><span style="color:black"><o:p>&nbsp;</o:p></span></p>
+</div>
+<div>
+<p class="MsoNormal" style="line-height:18.0pt"><span style="color:black">Warm regards,<o:p></o:p></span></p>
+</div>
+<div>
+<p class="MsoNormal" style="line-height:18.0pt"><span style="color:black">Asara Sushmitha,<o:p></o:p></span></p>
+</div>
+<div>
+<p class="MsoNormal" style="line-height:18.0pt"><span style="color:black">Emp id: 17958.<o:p></o:p></span></p>
+</div>
+<div>
+<p class="MsoNormal"><span style="color:black"><o:p>&nbsp;</o:p></span></p>
+</div>
+</div>
+</div>
+</body>
+</html>
+
+--_000_PN2PPFF66CE47A4B0378BC7800D1D0048D8F66EAPN2PPFF66CE47A4_--
