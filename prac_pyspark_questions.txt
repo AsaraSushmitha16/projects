@@ -1,0 +1,95 @@
+#import a sparksession
+
+#create a df with 10 numbers
+
+#from df take only divisibile_by_2 numbers and store in divisibile_by_2 variable
+
+#load the csv file(2015-summary.csv) and store it in csv_load variable and show the output
+
+#load the csv file and store it in csv_load variable and sort the data with count column and show the output
+
+#load the csv file and store it in csv_load variable and create a temporary table "sql_csv_table"
+
+#load the csv file and store it in csv_load variable and create a temporary table "sql_csv_table",
+#write a query in sql with grouping DEST_COUNTRY_NAME having count(1),stroing the data in sql_data variable
+
+#load the csv file and store it in csv_load variable and create a temporary table "sql_csv_table",
+# write a query in sql with max count column,stroing the data in sql_data variable
+#==========
+#load the csv file and store it in csv_load variable, select max of the count column store the result in pyspark_sql variable
+
+#write a query in sql selecting DEST_COUNTRY_NAME and sum of count of grouping DEST_COUNTRY_NAME as destination,show the result in desc
+#store the result in csv_sql variable
+
+#load the csv file and store it in csv_load variable
+#selecting DEST_COUNTRY_NAME and sum of count of grouping DEST_COUNTRY_NAME as destination,show the result in desc
+
+#load the by_day folder and store in load_byday_csv and create the sql temp table as retail_data, assign the schema of load_byday_csv to schema
+#and print the schema
+
+#create a dataframe in rdd_df variable contians 1,2,3 using row
+
+#create a dataframe number_500 contains 500 numbers and add each value + 10 and show the result
+
+#range of 2 numbers collect the numbers and store in rows_collect and print rows_collect
+
+#load the json data(2015-summary.json) and store in json_data variable and show the result
+
+#manually assign schema of to the json_data by loading and select only count column and store the result in a 
+
+#select the first records of "a" dataframe using function and select only count column and show 5 records
+
+#load the json data(2015-summary.json) of columns and store in json_data variable
+
+#create a row of values manually and show the result of 2nd index
+
+#load the json data into json_data variable and create temp table df_table
+
+#in manual_schema store schema(string,string,int) and df_data store random data 
+#and create the dataframe in new_df variable with df_data and manual_schema and print the result of new_df
+
+#load the json data in json_data variable and select only "DEST_COUNTRY_NAME","ORIGIN_COUNTRY_NAME" and show the result
+
+#load the json data in json_data variable and using col,column,expr select the column DEST_COUNTRY_NAME and show the result of 2 records
+
+#load the json data in json_data variable and select the column DEST_COUNTRY_NAME as dest with expr, again rename to destination1 and show 5 records
+
+#load the json data in json_data variable and select the column DEST_COUNTRY_NAME as dest, DEST_COUNTRY_NAME with selectExpr, show 2 records
+
+#load the json data in json_data variable and select all columns, if DEST_COUNTRY_NAME = ORIGIN_COUNTRY_NAME store in withincountry and show 5 records
+
+#load the json data in json_data variable and select avg of count,count of distinct DEST_COUNTRY_NAME
+
+#select all columns of json_data and add new column as One stroing lit value of 1 and print 2 records
+
+#load the json data in json_data variable
+#a variable contains data of adding new column name as new_column contains value of literal 1 and show 2 records
+#b variable contains data of adding new column name as new_column contains value if DEST_COUNTRY_NAME = ORIGIN_COUNTRY_NAME and show 2 records
+#c variable contains data of adding new column name as destination contains value of DEST_COUNTRY_NAME and show 2 records
+#d variable contains data of renaming column DEST_COUNTRY_NAME to new_column destination and show 2 records
+
+#load the json data in json_data variable
+#a variable contains data of adding new column name as "This Long Column-name" contains value of ORIGIN_COUNTRY_NAME and show 2 records
+#b variable contains data of selecting new column name as "This Long Column-name" and selecting "This Long Column-name" as new_column and show 2 records
+#c variable contains data of selecting new column name as "This Long Column-name" and columns and print the result
+
+#load the json data in json_data variable and delete the column DEST_COUNTRY_NAME and show 2 records
+
+#load the json data in json_data variable and 
+#a variable contains data of adding new column name as "new_column" contains value of "count" column and show 2 records,schema
+#b variable contains data of a and selecting new_column column name and change the type to int and show the schema
+
+#load the json data in json_data variable and 
+#a variable contains data of count<2 with where condition and show 4 records
+#b variable contains data of count<2 with filter condition and show 4 records
+#c variable contains data of count<2,ORIGIN_COUNTRY_NAME!=Croatia with where condition and show 4 records
+#d variable contains data of "DEST_COUNTRY_NAME","ORIGIN_COUNTRY_NAME" distinct and show count of records
+#e variable contains data of "DEST_COUNTRY_NAME" distinct and show count of records
+
+#load the json data in json_data variable, with sample split the data into 50% with constant 5 with replacement as false and count the result
+
+#load the json data into json_data variable and store the schema of json_data in schema variable
+#add new_rows contains ("sush","asara",2),("dolly","asara",4)
+#parallelize the new_rows store in parallelize variable
+#create a dataframe with parallelize ,schema in new_df variable and show the result of new_df
+#json_data union new_df where count=2,dest_country_name!=origin_country_name and show the result
