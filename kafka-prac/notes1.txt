@@ -1,0 +1,32 @@
+notes
+kafka
+log.segment.bytes =1000 (stores the 1000 bytes of data in each segment)
+'parse.key=true','key.seperator = :' (to divide the data using hashing)
+ack=0,ack=1,ack=all(or ack=-1) (producer-broker confimation) fires and forgets
+linger.ms, batch.size
+retry (reading msg failed from producer)
+
+so buffer have 2 properties
+1)buffer.memory --> default 25mb
+2)max.block.ms -->milli seconds
+
+flush() - to push all messages which are left in buffer
+max.in.flight.requests.per.connection -> how many requests Kafka can send before receiving an acknowledgment for the previous ones
+
+Fire-and-Forget,Synchronous Send,asynchronous Send -> DIFFERENT WAYS TO SEND MESSAGES TO KAFKA TOPIC USING PYTHON
+Sticky Partitioning ->  it groups multiple messages into a batch (controlled by batch.size or linger.ms) and then sends the entire batch to a single partition.
+a partition can only be consumed by one consumer in a group at a time(So, if a topic has 4 partitions and you add 5 consumers in the group, the 5th consumer will be idle.)
+
+the offset is stored in __consumer_offset(internal topic) -> offset will commit till where is consumer which is down have read
+auto_offset_reset='latest':
+auto_offset_reset='earliest':
+
+log.retention.hours=168
+log.retention.bytes=16856782496
+log.segment.bytes=16856782496 (where another segment files are created if the file reach this size)
+log.retention.checkinterval.ms=30000000 (checks if they can be deleted according to policies)
+
+log compaction. With log-compacted topics, Kafka automatically removes older messages for the same key and retains only the latest message
+
+enable.auto.commit =true
+auto.commit.interval.ms=1000(consumer side)
